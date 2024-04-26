@@ -8,7 +8,7 @@ import pdb
 import math
 import scipy.io
 
-np.random.seed(10)
+np.random.seed(10) # for reproducibility
 plt.ion()
 
 def main():
