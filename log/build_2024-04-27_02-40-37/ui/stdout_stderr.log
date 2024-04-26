@@ -1,0 +1,17 @@
+running egg_info
+writing ../../build/ui/ui.egg-info/PKG-INFO
+writing dependency_links to ../../build/ui/ui.egg-info/dependency_links.txt
+writing entry points to ../../build/ui/ui.egg-info/entry_points.txt
+writing requirements to ../../build/ui/ui.egg-info/requires.txt
+writing top-level names to ../../build/ui/ui.egg-info/top_level.txt
+reading manifest file '../../build/ui/ui.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+running install_egg_info
+running install_scripts
+Installing feed_mu script to /home/arms/paper3_ws/install/ui/lib/ui
+Installing slam_node script to /home/arms/paper3_ws/install/ui/lib/ui
+Installing ui_node script to /home/arms/paper3_ws/install/ui/lib/ui

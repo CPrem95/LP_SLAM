@@ -8,14 +8,17 @@ import pdb
 import math
 import scipy.io
 
-np.random.seed(10)
+np.random.seed(10) # for reproducibility
 plt.ion()
 
 def main():
     plot = True
     print("Loading data...")
-    data = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab.mat')
-    data_gt = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab_gt.mat')
+    # data = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab.mat')
+    # data_gt = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab_gt.mat')
+
+    data = scipy.io.loadmat('/home/arms/Documents/lab.mat')
+    data_gt = scipy.io.loadmat('/home/arms/Documents/lab_gt.mat')
     # print(data.keys())
 
     fig = plt.figure()
@@ -217,8 +220,12 @@ def main():
     plt_points_rhs_R1 = ax.scatter([], [], s = 30, edgecolors='r', facecolors= 'none', marker= 'o', label='estimated points R1')
     fig.canvas.draw()
     # Globally filtered observations
-    plt_lines_all, = ax.plot([], [], c='purple', linewidth = 2, label='Final estimated lines')
-    fig.canvas.draw()
+    # plt_lines_all, = ax.plot([], [], c='purple', linewidth = 2, label='Final estimated lines')
+    plt_lines_all = []
+    for i in range(10):
+        tmp_plt, = ax.plot([], [], c='purple', linewidth = 2, label='Final estimated lines')
+        plt_lines_all.append(tmp_plt)
+        fig.canvas.draw()
     plt_points_all = ax.scatter([], [], s = 30, edgecolors='k', facecolors= 'purple', marker= 'o', label='Final estimated points')
     fig.canvas.draw()
     
@@ -326,10 +333,9 @@ def main():
             ekf.visPLs2(N_LMs_rhs_1, L_LMs_rhs_1, P_LMs_rhs_1_plt, i, plt_lines_rhs_R1, plt_points_rhs_R1, fig)
 
         # Filter observations::
-        # obs_Lin, obs_Pt = ekf.createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12, 
-        #                                 N_LMs_rhs_1, L_LMs_rhs_1, P_LMs_rhs_1, N_LMs_rhs_12, L_LMs_rhs_12, 
-        #                                 mu, mu_bar, N_line, exp_pt_landm, obs_lhs_R12, obs_rhs_R12, visLine_x, visLine_y, vis_PL_all, plt_lines_all, plt_points_all)
-
+        obs_Lin, obs_Pt = ekf.createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12, 
+                                        N_LMs_rhs_1, L_LMs_rhs_1, P_LMs_rhs_1, N_LMs_rhs_12, L_LMs_rhs_12, 
+                                        mu, mu_bar, N_line, exp_pt_landm, obs_lhs_R12, obs_rhs_R12, visLine_x, visLine_y, fig, vis_PL_all, plt_lines_all, plt_points_all)
 
         if plot == True and 1:
             # Plot the observations
@@ -353,7 +359,11 @@ def main():
             fig.canvas.draw()
             fig.canvas.flush_events()
 
-            time.sleep(0.01)
+            # time.sleep(0.01)
+            # for line in ax.lines:
+            #     line.set_data([], [])
+            for line in plt_lines_all:
+                line.set_data([], [])
 
         # if i > 50:
         #     time.sleep(10000)
