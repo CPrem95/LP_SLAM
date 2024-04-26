@@ -211,26 +211,26 @@ def main():
     plt_points_rhs_R12 = ax.scatter([], [], s = 30, edgecolors='k', facecolors= 'none', marker= 'o', label='estimated points R12')
     fig.canvas.draw()
     # Estimated lines and points plot in REGION 1
-    plt_lines_lhs_R1, = ax.plot([], [], c='r', linewidth = 1, label='estimated lines R1')
+    plt_lines_lhs_R1, = ax.plot([], [], c='purple', linewidth = 1, label='estimated lines R1')
     fig.canvas.draw()
-    plt_lines_rhs_R1, = ax.plot([], [], c='r', linewidth = 1, label='estimated lines R1')
+    plt_lines_rhs_R1, = ax.plot([], [], c='purple', linewidth = 1, label='estimated lines R1')
     fig.canvas.draw()
-    plt_points_lhs_R1 = ax.scatter([], [], s = 30, edgecolors='r', facecolors= 'none', marker= 'o', label='estimated points R1')
+    plt_points_lhs_R1 = ax.scatter([], [], s = 30, edgecolors='purple', facecolors= 'none', marker= 'o', label='estimated points R1')
     fig.canvas.draw()
-    plt_points_rhs_R1 = ax.scatter([], [], s = 30, edgecolors='r', facecolors= 'none', marker= 'o', label='estimated points R1')
+    plt_points_rhs_R1 = ax.scatter([], [], s = 30, edgecolors='purple', facecolors= 'none', marker= 'o', label='estimated points R1')
     fig.canvas.draw()
     # Globally filtered observations
     # plt_lines_all, = ax.plot([], [], c='purple', linewidth = 2, label='Final estimated lines')
     plt_lines_all = []
     for i in range(10):
-        tmp_plt, = ax.plot([], [], c='purple', linewidth = 2, label='Final estimated lines')
-        plt_lines_all.append(tmp_plt)
+        tmp_plt_ln_all, = ax.plot([], [], c='red', linewidth = 2, linestyle= '--', label='Final est lines')
+        plt_lines_all.append(tmp_plt_ln_all)
         fig.canvas.draw()
-    plt_points_all = ax.scatter([], [], s = 30, edgecolors='k', facecolors= 'purple', marker= 'o', label='Final estimated points')
+    plt_points_all = ax.scatter([], [], s = 30, edgecolors='k', facecolors= 'red', marker= 'o', label='Final est points')
     fig.canvas.draw()
     
     # Legend 
-    fig.legend(handles=[odoms, plt_obs_lhs_R12, plt_obs_lhs_R1, plt_lines_lhs_R12, plt_points_lhs_R12, plt_lines_lhs_R1, plt_points_lhs_R1], loc='upper right')
+    fig.legend(handles=[odoms, plt_obs_lhs_R12, plt_obs_lhs_R1, plt_lines_lhs_R12, plt_points_lhs_R12, plt_lines_lhs_R1, plt_points_lhs_R1, tmp_plt_ln_all, plt_points_all], loc='upper right')
     fig.canvas.flush_events()
     # ax.relim()
     # ax.autoscale_view(True, True, True) 
@@ -335,7 +335,7 @@ def main():
         # Filter observations::
         obs_Lin, obs_Pt = ekf.createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12, 
                                         N_LMs_rhs_1, L_LMs_rhs_1, P_LMs_rhs_1, N_LMs_rhs_12, L_LMs_rhs_12, 
-                                        mu, mu_bar, N_line, exp_pt_landm, obs_lhs_R12, obs_rhs_R12, visLine_x, visLine_y, fig, vis_PL_all, plt_lines_all, plt_points_all)
+                                        mu, mu_bar, N_line, exp_pt_landm, obs_lhs_R12, obs_rhs_R12, visLine_x, visLine_y, vis_PL_all, plt_lines_all, plt_points_all)
 
 
         if raw_plot and 1:
