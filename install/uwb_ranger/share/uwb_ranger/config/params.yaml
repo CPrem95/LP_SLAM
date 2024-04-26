@@ -1,0 +1,7 @@
+/**: 
+  ros__parameters:
+    thresh1: 50
+    thresh2: 50
+    thresh3: 50
+
+    maxR: 10

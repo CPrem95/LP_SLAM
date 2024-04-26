@@ -1,0 +1,6 @@
+[console_scripts]
+init_ancs = uwb_slam.initialize_ancs:main
+run_SLAM = uwb_slam.all_uwb_SLAM:main
+test_LM = uwb_slam.test_LM:main
+test_rot = uwb_slam.test_rotate:main
+

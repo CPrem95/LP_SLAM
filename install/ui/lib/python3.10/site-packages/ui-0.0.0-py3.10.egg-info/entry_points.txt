@@ -1,0 +1,5 @@
+[console_scripts]
+feed_mu = ui.feed_mu:main
+slam_node = ui.slam_gui:main
+ui_node = ui.run_gui:main
+

@@ -1,0 +1,4 @@
+To test GSLAM
+	ros2 run ekf_slam gs_ekf_node
+
+

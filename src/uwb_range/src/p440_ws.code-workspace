@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"pthread.h": "c",
+			"stdio.h": "c",
+			"executor.h": "c"
+		}
+	}
+}

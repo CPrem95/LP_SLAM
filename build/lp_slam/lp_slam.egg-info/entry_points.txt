@@ -1,0 +1,3 @@
+[console_scripts]
+lp_node = lp_slam.lp_node:main
+
