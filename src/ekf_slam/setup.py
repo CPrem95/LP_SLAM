@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'lp_node = lp_slam.lp_node:main',
+            'lpsim_node = lp_slam.lp_node_sim:main',
             # 'kdf_node = ekf_slam.kdf:main',
             # 'gs_ekf_node = ekf_slam.ekf_gs_node:main'
         ],

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import time
 import pdb
 import time
+from sklearn.cluster import DBSCAN
 
 # Odometry to control input
 def odom2u(odom0, odom1):
@@ -204,8 +205,6 @@ def lin_regress(x, y):
     # Return the model
     return model
 
-import numpy as np
-
 # Find the length of the line
 def findLineLen(lineParams, inliers):
     # function to find the length of the line having all the inliers.
@@ -338,7 +337,6 @@ def myRANSAC(points, sampleSize, maxDistance, minL):
                 MaxInliers = inliers  # Update the maximum number of inliers
                 # GoodQ = Q  # Update the good Q value
                 # GoodStat = stat  # Update the good statistic value
-                print('MaxInliers: ', MaxInliers)  # Print the maximum number of inliers
 
     if WinningLineParams == [0, 0]:  # Check if a model was found
         print('L_Find completed! no lines!!')  # Print a message indicating that line finding is completed
@@ -355,6 +353,7 @@ def myRANSAC(points, sampleSize, maxDistance, minL):
     
     return modelR, inlierIdx, WinningLineParams  # Return the model flag, indices of the inliers, and parameters of the winning line
 
+# To check intersection of the line with the robot. read paper for more details
 def chkIntersec(mu, ro, alp):
     # Calculate the slope and y-intercept of the observed line
     m1, c1 = roalp2mc(mu, ro, alp)
@@ -392,8 +391,6 @@ def chkIntersec2(mu, m1, c1):
 
     return isInter
 
-import numpy as np
-
 def chkIntersec3(mu, r, psi):
     # Calculate the slope and y-intercept of the observed line
     m1 = np.tan(np.pi / 2 + psi)
@@ -414,6 +411,7 @@ def chkIntersec3(mu, r, psi):
 
     return isInter
 
+# STILL TO BE USED || to mitigate the effect of the slope of the line encountered in Matlab
 def modify_lineParams(isLine, inlierIdx, line_params, thresh_th, points, sampleSize, maxDistance, minNNI):
     m = line_params[0]
     m_th = np.degrees(np.arctan(m))  # converts the slope to an angle
@@ -427,7 +425,7 @@ def modify_lineParams(isLine, inlierIdx, line_params, thresh_th, points, sampleS
 
         Xlim = [-2000, 2000]
         mc2line(Xlim, points, [points[inlierIdx, 0], points[inlierIdx, 1]], line_params[0], line_params[1], 1000, True)
-        time.sleep(0.01)
+        # time.sleep(0.01)
     elif thresh_th < m_th < 90:
         mod_points = np.column_stack((points[:, 1], points[:, 0]))
         isLine, inlierIdx, model = myRANSAC(mod_points, sampleSize, maxDistance, minNNI)
@@ -437,11 +435,12 @@ def modify_lineParams(isLine, inlierIdx, line_params, thresh_th, points, sampleS
 
         Xlim = [-2000, 2000]
         mc2line(Xlim, points, [points[inlierIdx, 0], points[inlierIdx, 1]], line_params[0], line_params[1], 1000, True)
-        time.sleep(0.01)
+        # time.sleep(0.01)
     
     return isLine, inlierIdx, line_params
 
-
+# Used in LineExtract to fit a line to the inliers usinf ransac
+# Fit a line to the inliers using polyfit
 def fitransac(pts, odoms, rob_obs_pose, minNNI, fig):
     lineParams_odom = 0
     lineParams_robot = 0
@@ -610,6 +609,7 @@ def fitransac2(points, odoms, rob_obs_pose, minNNI, fig):
 
     return lineParams_odom, lineParams_robot, outlierPts, inlierPts, isLine
 
+# Extract lines from the observations
 def lineExtract(pts_i, odom_i, rob_obs_pose, thresh, N_LMs, minNNI, fig):
     nni_thresh, N_inl_thresh, L_len_thresh, r_thresh, th_thresh = thresh
 
@@ -641,7 +641,6 @@ def lineExtract(pts_i, odom_i, rob_obs_pose, thresh, N_LMs, minNNI, fig):
                     N_LMs[0] += 1  
     return N_LMs, L_LMs
 
-
 #_______________________________________________________________________________________________________________________
 #
 # Point Extraction
@@ -651,70 +650,70 @@ def filtnearPts(P_LMs, N_LMs, pts):
     thresh = 300
     D = np.linalg.norm(pts[:, np.newaxis, :] - pts[np.newaxis, :, :], axis=-1)
     n = N_LMs[1]
-    p_LMs = []
+    p_LMs = np.empty((0, 2))
     n_LMs = 0
 
     for i in range(n):
         d = D[i]
         if np.all(d[d != 0] > thresh):
-            p_LMs.append(P_LMs[i])
+            p_LMs = np.vstack((p_LMs, P_LMs[i]))
             n_LMs += 1
 
     N_LMs[1] = n_LMs
     return p_LMs, N_LMs
 
-from sklearn.cluster import DBSCAN
-
 def pointExtract(points, L_LMs, N_LMs, d_thresh, params, odom_i, rob_obs_pose, fig):
+    P_LMs = np.zeros((2))
+    xymeans = np.zeros((2))
+    if points.shape[0] > 0:
+        cluster1 = DBSCAN(eps=params[1], min_samples=params[0], algorithm='auto')
+        clus_idx = cluster1.fit_predict(points)
 
-    cluster1 = DBSCAN(eps=params[1], min_samples=params[0], algorithm='auto')
-    clus_idx = cluster1.fit_predict(points)
+        N = np.max(clus_idx) + 1
 
-    N = np.max(clus_idx)
+        xymeans = np.zeros((N, 2))
+        P_LMs = np.zeros((N, 2))
+        # lengths = np.zeros((N, N_LMs[0]))
 
-    xymeans = np.zeros((N, 2))
-    P_LMs = np.zeros((N, 2))
-    lengths = np.zeros((N, N_LMs[0]))
+        for i in range(N):
+            ind = np.where(clus_idx == i)[0]
+            pt = np.mean(points[ind], axis=0)
 
-    for i in range(N):
-        ind = np.where(clus_idx == i)[0]
-        pt = np.mean(points[ind], axis=0)
+            check = True
+            for j in range(N_LMs[0]):
+                D = pt2line(L_LMs[j, 2:4], pt)
+                # lengths[N_LMs[1], j] = D
+                if D < d_thresh:
+                    check = False
+                    break
 
-        check = True
-        for j in range(N_LMs[0]):
-            D = pt2line(L_LMs[j, 2:4], pt)
-            lengths[N_LMs[1], j] = D
-            if D < d_thresh:
-                check = False
-                break
+            if check:
+                xymeans[N_LMs[1]] = pt
+                N_LMs[1] += 1
 
-        if check:
-            N_LMs[1] += 1
-            xymeans[N_LMs[1] - 1] = pt
+                odompt = rob_obs_pose.flatten()
+                X = np.vstack((pt, odompt[:2]))
+                r = np.linalg.norm(X[0] - X[1])
+                P_LMs[N_LMs[1] - 1, 0] = r
 
-            odompt = rob_obs_pose
-            X = np.vstack((pt, odompt[:2]))
-            r = np.linalg.norm(X[0] - X[1])
-            P_LMs[N_LMs[1] - 1, 0] = r
+                del_pt = pt - odompt[:2]
+                th = np.arctan2(del_pt[1], del_pt[0]) - odompt[2]
+                P_LMs[N_LMs[1] - 1, 1] = th
 
-            del_pt = pt - odompt[:2]
-            th = np.arctan2(del_pt[1], del_pt[0]) - odompt[2]
-            P_LMs[N_LMs[1] - 1, 1] = th
+        if N_LMs[1] > 1:
+            P_LMs, N_LMs = filtnearPts(P_LMs, N_LMs, xymeans)
 
-    if N_LMs[1] > 1:
-        P_LMs, N_LMs = filtnearPts(P_LMs, N_LMs, xymeans)
+        if fig:
+            plt.figure()
+            plt.scatter(odom_i[:, 0], odom_i[:, 1], marker='.', color='black', label='Odometry')
+            plt.scatter(xymeans[:N_LMs[1], 0], xymeans[:N_LMs[1], 1], color='blue', label='Cluster center(s)')
+            plt.legend()
+            plt.xlabel('x [mm]')
+            plt.ylabel('y [mm]')
+            plt.axis('equal')
+            plt.show()
 
-    if fig:
-        plt.figure()
-        plt.scatter(odom_i[:, 0], odom_i[:, 1], marker='.', color='black', label='Odometry')
-        plt.scatter(xymeans[:N_LMs[1], 0], xymeans[:N_LMs[1], 1], color='blue', label='Cluster center(s)')
-        plt.legend()
-        plt.xlabel('x [mm]')
-        plt.ylabel('y [mm]')
-        plt.axis('equal')
-        plt.show()
-
-    return N_LMs, P_LMs, xymeans, lengths
+    return N_LMs, P_LMs, xymeans
 
 
 #_______________________________________________________________________________________________________________________
@@ -724,31 +723,34 @@ def pointExtract(points, L_LMs, N_LMs, d_thresh, params, odom_i, rob_obs_pose, f
 
 def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
               N_LMs_rhs_1, L_LMs_rhs_1, P_LMs_rhs_1, N_LMs_rhs_12, L_LMs_rhs_12,
-              mu, mu_bar, N_line, N_pts_allocated, pts_lhs_i, pts_rhs_i,
-              visLine_x, visLine_y, plotfig):
+              odom, mu, mu_bar, N_line, N_pts_allocated, 
+              visLine_x, visLine_y, plotfig, ax_L, ax_P):
+    
+    # odompt = mu_bar[:3]
+    odompt = odom.reshape(-1, 1)
+
     pt2line_thresh = 250
 
-    obs_Pts = np.zeros((1, 10, 3))
-    obs_Lins = np.zeros((1, 10, 8))
+    obs_Pts = np.zeros((10, 3))
+    obs_Lins = np.zeros((10, 8))
 
     count_L = 0
     count_P = 0
 
     # LHS
     for i in range(N_LMs_lhs_1[0]):
-        obs_Lins[0, count_L, :] = L_LMs_lhs_1[i, :]
+        obs_Lins[count_L, :] = L_LMs_lhs_1[i, :]
         count_L += 1
 
     # RHS
     for i in range(N_LMs_rhs_1[0]):
-        obs_Lins[0, count_L, :] = L_LMs_rhs_1[i, :]
+        obs_Lins[count_L, :] = L_LMs_rhs_1[i, :]
         count_L += 1
 
     # LHS
     mem_1 = False
     mem_2 = False
     for i in range(N_LMs_lhs_1[1]):
-        odompt = mu_bar[:3]
         x0 = odompt[0] + P_LMs_lhs_1[i, 0] * np.cos(P_LMs_lhs_1[i, 1] + odompt[2])
         y0 = odompt[1] + P_LMs_lhs_1[i, 0] * np.sin(P_LMs_lhs_1[i, 1] + odompt[2])
         x1, y1 = P_LMs_lhs_1[i, :2]
@@ -766,17 +768,17 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
             m, c = rth2mc(mu_bar, N_pts_allocated, k)
             if pt2line([m, c], [x0, y0]) < pt2line_thresh:
                 mid = [np.mean(visLine_x[k]), np.mean(visLine_y[k])]
-                mid2pt = np.linalg.norm(mid - [x0, y0])
+                mid2pt = np.linalg.norm([mid[0] - x0, mid[1] - y0])
                 ln_len = np.linalg.norm([visLine_x[k, 0] - visLine_x[k, 1], visLine_y[k, 0] - visLine_y[k, 1]])
                 if mid2pt < ln_len / 2 + 300:
                     mem_2 = True
 
         if mem_1:
-            obs_Lins[0, count_L, :] = near_line
+            obs_Lins[count_L, :] = near_line
             count_L += 1
         elif not mem_1 and not mem_2:
-            obs_Pts[0, count_P, :2] = [x1, y1]
-            obs_Pts[0, count_P, 2] = count_P
+            obs_Pts[count_P, :2] = [x1, y1]
+            obs_Pts[count_P, 2] = count_P
             count_P += 1
         mem_1 = False
         mem_2 = False
@@ -784,8 +786,15 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
     # RHS
     mem_3 = False
     mem_4 = False
+    # print('N_LMs_rhs_1: ', N_LMs_rhs_1)
+    
     for i in range(N_LMs_rhs_1[1]):
-        odompt = mu_bar[:3]
+        # print('i: ', i)
+        # print('odompt: ', odompt)
+        # print('P_LMs_rhs_1: ', P_LMs_rhs_1)
+        # print('P_LMs_rhs_1[i, 0]: ', P_LMs_rhs_1[i, 0])
+        # print('P_LMs_rhs_1[i, 1]: ', P_LMs_rhs_1[i, 1])
+
         x0 = odompt[0] + P_LMs_rhs_1[i, 0] * np.cos(P_LMs_rhs_1[i, 1] + odompt[2])
         y0 = odompt[1] + P_LMs_rhs_1[i, 0] * np.sin(P_LMs_rhs_1[i, 1] + odompt[2])
         x1, y1 = P_LMs_rhs_1[i, :2]
@@ -802,28 +811,23 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
             m, c = rth2mc(mu_bar, N_pts_allocated, k)
             if pt2line([m, c], [x0, y0]) < pt2line_thresh:
                 mid = [np.mean(visLine_x[k]), np.mean(visLine_y[k])]
-                mid2pt = np.linalg.norm(mid - [x0, y0])
+                mid2pt = np.linalg.norm([mid[0] - x0, mid[1] - y0])
                 ln_len = np.linalg.norm([visLine_x[k, 0] - visLine_x[k, 1], visLine_y[k, 0] - visLine_y[k, 1]])
                 if mid2pt < ln_len / 2 + 300:
                     mem_4 = True
 
         if mem_3:
-            obs_Lins[0, count_L, :] = near_line
+            obs_Lins[count_L, :] = near_line
             count_L += 1
         elif not mem_3 and not mem_4:
-            obs_Pts[0, count_P, :2] = [x1, y1]
-            obs_Pts[0, count_P, 2] = count_P
+            obs_Pts[count_P, :2] = [x1, y1]
+            obs_Pts[count_P, 2] = count_P
             count_P += 1
         mem_3 = False
         mem_4 = False
 
     if plotfig:
-        figID = 500
-        plt.figure(figID)
-        plt.scatter(np.nonzero(pts_lhs_i[:100, :, 0]), np.nonzero(pts_lhs_i[:100, :, 1]), c='magenta')
-        plt.scatter(np.nonzero(pts_rhs_i[:100, :, 0]), np.nonzero(pts_rhs_i[:100, :, 1]), c='magenta')
-        plt.legend(['Raw observations', 'Raw observations'], loc='best')
-        visPLs([count_L, count_P], obs_Lins[0], obs_Pts[0], [mu[:3], mu_bar[:3]], 2, figID)
+        visPLs([count_L, count_P], obs_Lins, obs_Pts, odompt, ax_L, ax_P)
 
     return obs_Lins, obs_Pts
 
@@ -866,38 +870,25 @@ def roalp2mc(mu, ro, alp):
 
     return m, c
 
-
 # Visualize the line and point landmarks
-def visPLs(N_LMs, L_LMs, P_LMs, odom_i, index, figID):
+def visPLs(N_LMs, L_LMs, P_LMs, odompt, ax_L, ax_P):
     # Lines
-    plt.figure(figID)
-    plt.gca().set_aspect('equal', adjustable='box')
-
     for i in range(N_LMs[0]):
-        l_x = L_LMs[i, 5:7]
-        l_y = L_LMs[i, 7:9]
+        l_x = L_LMs[i, 4:6]
+        l_y = L_LMs[i, 6:8]
         if L_LMs[i, 2] < 0:
             l_x = np.flip(l_x)
-        plt.plot(l_x, l_y, color='green', linewidth=2)
+        ax_L[i].set_xdata(l_x)
+        ax_L[i].set_ydata(l_y)
 
     # Points
-    odompt = odom_i[index]
     p_x = odompt[0] + P_LMs[:N_LMs[1], 0] * np.cos(P_LMs[:N_LMs[1], 1] + odompt[2])
     p_y = odompt[1] + P_LMs[:N_LMs[1], 0] * np.sin(P_LMs[:N_LMs[1], 1] + odompt[2])
-    plt.scatter(p_x, p_y, color='blue', marker='o')
 
-    # Odometry
-    plt.scatter([odom_i[0, 0], odom_i[-1, 0]], [odom_i[0, 1], odom_i[-1, 1]], color='black')
-
-    plt.xlabel('x [mm]')
-    plt.ylabel('y [mm]')
-    plt.title('Observations')
-    plt.grid(True)
-    plt.legend(['Line landmarks', 'Point landmarks', 'Pose estimations'], loc='best')
-    plt.show()
+    ax_P.set_offsets(np.column_stack((p_x, p_y)))
 
 # Visualize the line and point landmarks
-def visPLs2(N_LMs, L_LMs, P_LMs, index, ax, fig):
+def visPLs2(N_LMs, L_LMs, P_LMs, index, ax_L, ax_P, fig):
     # Lines
     # L_LMs = [r, psi, m, c, x0, x1, y0, y1]
     for i in range(N_LMs[0]):
@@ -906,18 +897,26 @@ def visPLs2(N_LMs, L_LMs, P_LMs, index, ax, fig):
 
         if L_LMs[i, 2] < 0:
             l_x = np.flip(l_x)
-        ax.set_xdata(l_x)
-        ax.set_ydata(l_y)
+        ax_L.set_xdata(l_x)
+        ax_L.set_ydata(l_y)
         # m = L_LMs[i, 2]
         # c = L_LMs[i, 3]
         # ax.set_ydata([m * l_x[0] + c, m * l_x[1] + c])
         fig.canvas.draw()
 
     if N_LMs[0] == 0:
-        ax.set_xdata([])
-        ax.set_ydata([])
+        ax_L.set_xdata([])
+        ax_L.set_ydata([])
         fig.canvas.draw()
-
+    
+    # Points
+    for i in range(N_LMs[1]):
+        ax_P.set_offsets(P_LMs[i, :2])
+        fig.canvas.draw()
+    
+    if N_LMs[1] == 0:
+        ax_P.set_offsets([ None, None])
+        fig.canvas.draw()
 
 #_______________________________________________________________________________________________________________________
 #
@@ -958,48 +957,53 @@ def ekf_unkown_predict(mu, sig, u, R, F):
 
 # POINTS:: Correct the state and covariance 
 def EKF_unknown_pts_obs_correction(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q, z):
-    del_ = np.array([mu_bar[2 + 2 * k] - mu_bar[0], mu_bar[3 + 2 * k] - mu_bar[1]])
+    dx = mu_bar[3 + 2 * k] - mu_bar[0]
+    dy = mu_bar[4 + 2 * k] - mu_bar[1]
+    del_ = [dx[0], dy[0]]
+
     q = np.dot(del_, del_)
     sq = np.sqrt(q)
-    z0 = np.array([sq, np.arctan2(del_[1], del_[0]) - mu_bar[2]])
+
+    z0 = np.array([sq, np.arctan2(del_[1], del_[0]) - mu_bar[2][0]]).reshape(-1, 1)
 
     if z[1] > np.pi and z0[1] < 0:
         z0[1] = 2 * np.pi + z0[1]
 
-    if z0[1] > np.pi and z[1] < 0:
+    elif z0[1] > np.pi and z[1] < 0:
         z0[1] = z0[1] - 2 * np.pi
 
-    if z0[1] < -np.pi and z[1] > 0:
+    elif z0[1] < -np.pi and z[1] > 0:
         z0[1] = z0[1] + 2 * np.pi
+    
+    elif z[1] < -np.pi and z0[1] > 0:
+        z[1] = z[1] + 2 * np.pi
 
     del_z = z - z0
 
     F_xk = np.block([
-        [np.eye(3), np.zeros((3, 2 * k - 2)), np.zeros((3, 2)), np.zeros((3, 2 * exp_pt_landm - 2 * k)),
-         np.zeros((3, 2 * exp_line_landm))],
-        [np.zeros((2, 3)), np.zeros((2, 2 * k - 2)), np.eye(2), np.zeros((2, 2 * exp_pt_landm - 2 * k)),
-         np.zeros((2, 2 * exp_line_landm))]])
+        [np.eye(3), np.zeros((3, 2 * k)), np.zeros((3, 2)), np.zeros((3, 2 * exp_pt_landm - 2 * k - 2)), np.zeros((3, 2 * exp_line_landm))],
+        [np.zeros((2, 3)), np.zeros((2, 2 * k)), np.eye(2), np.zeros((2, 2 * exp_pt_landm - 2 * k - 2)), np.zeros((2, 2 * exp_line_landm))]])
 
     H = (1 / q) * np.array([[-del_[0] * sq, -del_[1] * sq, 0, del_[0] * sq, del_[1] * sq],
                             [del_[1], -del_[0], -1, -del_[1], del_[0]]]) @ F_xk
 
     psi = H @ sig_bar @ H.T + Q
-    pie = np.dot(del_z.T, np.linalg.inv(psi)) @ del_z
+    pie = del_z.T @ np.linalg.inv(psi) @ del_z
 
     return pie, psi, H, z0
 
 # LINES:: Correct the state and covariance || depends on the line model:: intersects or not, read paper (refer Fig. #)
 def EKF_unknown_line_obs_correction_1(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q, z):
-    r_i = mu_bar[2 + 2 * exp_pt_landm + 2 * k]
-    psi_i = mu_bar[3 + 2 * exp_pt_landm + 2 * k]
+    r_i = mu_bar[3 + 2 * exp_pt_landm + 2 * k]
+    psi_i = mu_bar[4 + 2 * exp_pt_landm + 2 * k]
 
     z0 = np.array([r_i - mu_bar[0] * np.cos(psi_i) - mu_bar[1] * np.sin(psi_i), psi_i - mu_bar[2]])
 
     F_xk = np.block([
-        [np.eye(3), np.zeros((3, 2 * exp_pt_landm)), np.zeros((3, 2 * k - 2)), np.zeros((3, 2)), np.zeros((3, 2 * exp_line_landm - 2 * k))],
-        [np.zeros((2, 3)), np.zeros((2, 2 * exp_pt_landm)), np.zeros((2, 2 * k - 2)), np.eye(2), np.zeros((2, 2 * exp_line_landm - 2 * k))]])
+        [np.eye(3), np.zeros((3, 2 * exp_pt_landm)), np.zeros((3, 2 * k)), np.zeros((3, 2)), np.zeros((3, 2 * exp_line_landm - 2 * k - 2))],
+        [np.zeros((2, 3)), np.zeros((2, 2 * exp_pt_landm)), np.zeros((2, 2 * k)), np.eye(2), np.zeros((2, 2 * exp_line_landm - 2 * k - 2))]])
 
-    H = np.array([[-np.cos(psi_i), -np.sin(psi_i), 0, 1, mu_bar[0] * np.sin(psi_i) - mu_bar[1] * np.cos(psi_i)],
+    H = np.array([[-math.cos(psi_i), -math.sin(psi_i), 0, 1, mu_bar[0][0] * math.sin(psi_i) - mu_bar[1][0] * math.cos(psi_i)],
                   [0, 0, -1, 0, 1]]) @ F_xk
 
     psi = H @ sig_bar @ H.T + Q
@@ -1018,15 +1022,15 @@ def EKF_unknown_line_obs_correction_1(k, mu_bar, sig_bar, exp_pt_landm, exp_line
 
 # LINES:: Correct the state and covariance || depends on the line model:: intersects or not, read paper (Fig. #)
 def EKF_unknown_line_obs_correction_2(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q, z):
-    r_i = mu_bar[2 + 2 * exp_pt_landm + 2 * k]
-    psi_i = mu_bar[3 + 2 * exp_pt_landm + 2 * k]
+    r_i = mu_bar[3 + 2 * exp_pt_landm + 2 * k]
+    psi_i = mu_bar[4 + 2 * exp_pt_landm + 2 * k]
 
     z0 = np.array([-r_i + mu_bar[0] * np.cos(psi_i) + mu_bar[1] * np.sin(psi_i), psi_i - mu_bar[2] + np.pi]).reshape(-1, 1)
 
-    F_xk = np.block([[np.eye(3), np.zeros((3, 2 * exp_pt_landm)), np.zeros((3, 2 * k - 2)), np.zeros((3, 2)), np.zeros((3, 2 * exp_line_landm - 2 * k))],
-                      [np.zeros((2, 3)), np.zeros((2, 2 * exp_pt_landm)), np.zeros((2, 2 * k - 2)), np.eye(2), np.zeros((2, 2 * exp_line_landm - 2 * k))]])
+    F_xk = np.block([[np.eye(3), np.zeros((3, 2 * exp_pt_landm)), np.zeros((3, 2 * k)), np.zeros((3, 2)), np.zeros((3, 2 * exp_line_landm - 2 * k - 2))],
+                      [np.zeros((2, 3)), np.zeros((2, 2 * exp_pt_landm)), np.zeros((2, 2 * k)), np.eye(2), np.zeros((2, 2 * exp_line_landm - 2 * k - 2))]])
 
-    H = np.array([[np.cos(psi_i), np.sin(psi_i), 0, -1, mu_bar[1] * np.cos(psi_i) - mu_bar[0] * np.sin(psi_i)],
+    H = np.array([[math.cos(psi_i), math.sin(psi_i), 0, -1, mu_bar[1][0] * math.cos(psi_i) - mu_bar[0][0] * math.sin(psi_i)],
                   [0, 0, -1, 0, 1]]) @ F_xk
 
     psi = H @ sig_bar @ H.T + Q
@@ -1039,46 +1043,63 @@ def EKF_unknown_line_obs_correction_2(k, mu_bar, sig_bar, exp_pt_landm, exp_line
 
     del_Z = z - z0
 
-    if k == 4:
-        print('***')
-
     pie = (del_Z.T @ np.linalg.inv(psi) @ del_Z).item()
     return pie, psi, H, z0
 
 # EKF correction for both point and line landmarks
-def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_pts, obs_lin, Q_pts, Q_lin, iter, hist_i, countarr, exp_pt_landm, exp_line_landm, N_pt, N_line, visLine_x, visLine_y, alp_pt, alp_line):
+def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_lhs_R12, obs_rhs_R12, obs_pts, obs_lin, Q_pts, Q_lin, iter, hist_i, countarr, exp_pt_landm, exp_line_landm, N_pt, N_line, visLine_x, visLine_y, alp_pt, alp_line):
     obs_pts = np.squeeze(obs_pts)
     obs_lin = np.squeeze(obs_lin)
     len_obs_pts, _ = obs_pts.shape
     len_obs_lin, _ = obs_lin.shape
-    ind_j_pt = 0
-    ind_j_ln = 0
-
+    # ind_j_pt = -1
+    # ind_j_ln = -1
     # Point landmarks
     for j in range(len_obs_pts):
-        if obs_pts[j, 2] != 0:
+        if obs_pts[j, 0] != 0:
             r = obs_pts[j, 0]
             phi = obs_pts[j, 1]
             z = np.array([r, phi]).reshape(-1, 1)
 
             rel_meas = np.array([r * np.cos(phi + mu_bar[2]), r * np.sin(phi + mu_bar[2])]).reshape(-1, 1)
-            mu_bar[2 + 2 * (N_pt + 1):3 + 2 * (N_pt + 1)] = mu_bar[:2] + rel_meas
+            mu_bar[1 + 2 * (N_pt + 1):3 + 2 * (N_pt + 1)] = mu_bar[:2] + rel_meas
 
             pie = np.zeros(N_pt + 1)
-            for k in range(1, N_pt + 2):
-                pie[k - 1], _, _, _ = EKF_unknown_pts_obs_correction(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
+            for k in range(N_pt):
+                pie[k], _, _, _ = EKF_unknown_pts_obs_correction(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
             pie[N_pt] = alp_pt
+            
             ind_j_pt = np.argmin(pie)
-            _, psi_j, H_j, z_j = EKF_unknown_pts_obs_correction(ind_j_pt, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
 
-            N_pt = max(N_pt, ind_j_pt)
+            # check whether the new POINT observation is isolated
+            if ind_j_pt == N_pt: # if a new landmark is observed
+                all_pts = np.concatenate((obs_lhs_R12, obs_rhs_R12)) # all the raw observation points
+                cent = mu_bar[:2] + rel_meas # current observation
+                iso = chkIsolated(all_pts, cent, 150, 250)
+                if iso: # Update performed only if its a ISOLATED point
+                    _, psi_j, H_j, z_j = EKF_unknown_pts_obs_correction(ind_j_pt, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
 
-            K = sig_bar @ H_j.T @ np.linalg.inv(psi_j)
+                    N_pt += 1
+                    print('\nPoints pie: ', pie)
+                    K = sig_bar @ H_j.T @ np.linalg.inv(psi_j)
 
-            mu_bar = mu_bar + K @ (z - z_j)
-            sig_bar = (np.eye(sig_bar.shape[0]) - K @ H_j) @ sig_bar
+                    mu_bar = mu_bar + K @ (z - z_j)
+                    sig_bar = (np.eye(sig_bar.shape[0]) - K @ H_j) @ sig_bar
+                else:
+                    # pdb.set_trace()
+                    pass
 
-            mu_bar, sig_bar, N_pt, countarr, hist_i = modifyPtLMs(iter, hist_i, countarr, [exp_pt_landm, exp_line_landm], 1, ind_j_pt, mu_bar, sig_bar, N_pt)
+            else: # if its not a NEW POINT observation
+                _, psi_j, H_j, z_j = EKF_unknown_pts_obs_correction(ind_j_pt, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
+
+                # N_pt = max(N_pt, ind_j_pt + 1)
+                print('\nPoints pie: ', pie)
+                K = sig_bar @ H_j.T @ np.linalg.inv(psi_j)
+
+                mu_bar = mu_bar + K @ (z - z_j)
+                sig_bar = (np.eye(sig_bar.shape[0]) - K @ H_j) @ sig_bar
+
+            # mu_bar, sig_bar, N_pt, countarr, hist_i = modifyPtLMs(iter, hist_i, countarr, [exp_pt_landm, exp_line_landm], 1, ind_j_pt, mu_bar, sig_bar, N_pt)
         else:
             break
 
@@ -1099,39 +1120,37 @@ def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_pts, obs_lin, Q_pts, Q_lin, i
                 gam = alpha + mu_bar[2]
                 r = ro + mu_bar[0] * np.cos(gam) + mu_bar[1] * np.sin(gam)
                 psi = gam
-
-            mu_bar[2 + 2 * exp_pt_landm + 2 * (N_line + 1):3 + 2 * exp_pt_landm + 2 * (N_line + 1)] = np.array([r, psi]).reshape(-1, 1)
+            
+            mu_bar[1 + 2 * exp_pt_landm + 2 * (N_line + 1): 3 + 2 * exp_pt_landm + 2 * (N_line + 1)] = np.array([r, psi]).reshape(-1, 1)
 
             pie = np.zeros(N_line + 1)
             for k in range(N_line):
-                r = mu_bar[2 * exp_pt_landm + 2 + 2 * k]
-                psi = mu_bar[2 * exp_pt_landm + 3 + 2 * k]
-                isInter = chkIntersec3(mu_bar, r, psi)
-                if r < 0:
-                    print('$')
-                    input()
+                r = mu_bar[3 + 2 * exp_pt_landm + 2 * k]
+                psi = mu_bar[4 + 2 * exp_pt_landm + 2 * k]
+                isInter = chkIntersec3(mu_bar, r, psi) # Check if the line intersects with the robot's path
                 if isInter:
                     pie[k], _, _, _ = EKF_unknown_line_obs_correction_2(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_lin, z)
                 else:
                     pie[k], _, _, _ = EKF_unknown_line_obs_correction_1(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_lin, z)
+            
+            print('\nLines pie: ', pie)
             pie[N_line] = alp_line
             ind_j_ln = np.argmin(pie)
 
-            r = mu_bar[2 * exp_pt_landm + 2 + 2 * ind_j_ln]
-            psi = mu_bar[2 * exp_pt_landm + 3 + 2 * ind_j_ln]
+            r = mu_bar[3 + 2 * exp_pt_landm + 2 * ind_j_ln]
+            psi = mu_bar[4 + 2 * exp_pt_landm + 2 * ind_j_ln]
             isInter = chkIntersec3(mu_bar, r, psi)
-            if r < 0:
-                print('$')
-                input()
             if isInter:
                 _, psi_j, H_j, z_j = EKF_unknown_line_obs_correction_2(ind_j_ln, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_lin, z)
             else:
                 _, psi_j, H_j, z_j = EKF_unknown_line_obs_correction_1(ind_j_ln, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_lin, z)
-
+            
+            # comment the following two lines if you are using this function for simulation
+            # also remove else >> break parts in both line and point sections if you are using this function for simulation
             visLine_x = updateLims(ind_j_ln, visLine_x, [obs_lin[j, 4], obs_lin[j, 5]])
             visLine_y = updateLims(ind_j_ln, visLine_y, [obs_lin[j, 6], obs_lin[j, 7]])
 
-            N_line = max(N_line, ind_j_ln)
+            N_line = max(N_line, ind_j_ln + 1)
 
             K = sig_bar @ H_j.T @ np.linalg.inv(psi_j)
 
@@ -1140,11 +1159,97 @@ def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_pts, obs_lin, Q_pts, Q_lin, i
             if abs(delta_mu[0]) < 200 and abs(delta_mu[1]) < 200:
                 mu_bar = mu_bar + delta_mu
                 sig_bar = (np.eye(sig_bar.shape[0]) - K @ H_j) @ sig_bar
-                mu_bar, sig_bar, N_line, countarr, hist_i, visLine_x, visLine_y = modifyLinLMs(iter, hist_i, countarr, [exp_pt_landm, exp_line_landm], 20, ind_j_ln, mu_bar, sig_bar, N_line, N_line + 1, z, visLine_x, visLine_y)
+                # mu_bar, sig_bar, N_line, countarr, hist_i, visLine_x, visLine_y = modifyLinLMs(iter, hist_i, countarr, [exp_pt_landm, exp_line_landm], 20, ind_j_ln, mu_bar, sig_bar, N_line, N_line + 1, z, visLine_x, visLine_y)
         else:
             break
 
-    return mu_bar, sig_bar
+    return mu_bar, sig_bar, N_pt, N_line, hist_i, countarr, visLine_x, visLine_y
+
+# EKF correction for both point and line landmarks
+### ONLY FOR THE SIMULATION !!!
+def EKF_unknown_correction_LP2(mu_bar, sig_bar, obs_pts, obs_lin, Q_pts, Q_lin, iter, hist_i, countarr, exp_pt_landm, exp_line_landm, N_pt, N_line, visLine_x, visLine_y, alp_pt, alp_line):
+    obs_pts = np.squeeze(obs_pts)
+    obs_lin = np.squeeze(obs_lin)
+    len_obs_pts, _ = obs_pts.shape
+    len_obs_lin, _ = obs_lin.shape
+    print('obs_pts: ', obs_pts)
+    print('obs_lin: ', obs_lin)
+    # ind_j_pt = -1
+    # ind_j_ln = -1
+    # Point landmarks
+    for j in range(len_obs_pts):
+        if obs_pts[j, 0] != 0:
+            r = obs_pts[j, 0]
+            phi = obs_pts[j, 1]
+            z = np.array([r, phi]).reshape(-1, 1)
+
+            rel_meas = np.array([r * np.cos(phi + mu_bar[2]), r * np.sin(phi + mu_bar[2])]).reshape(-1, 1)
+            mu_bar[1 + 2 * (N_pt + 1):3 + 2 * (N_pt + 1)] = mu_bar[:2] + rel_meas
+
+            pie = np.zeros(N_pt + 1)
+            for k in range(N_pt):
+                pie[k], _, _, _ = EKF_unknown_pts_obs_correction(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
+            pie[N_pt] = alp_pt
+            
+            ind_j_pt = np.argmin(pie)
+            _, psi_j, H_j, z_j = EKF_unknown_pts_obs_correction(ind_j_pt, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
+
+            N_pt = max(N_pt, ind_j_pt + 1)
+            print('\nPoints pie: ', pie)
+            K = sig_bar @ H_j.T @ np.linalg.inv(psi_j)
+
+            mu_bar = mu_bar + K @ (z - z_j)
+            sig_bar = (np.eye(sig_bar.shape[0]) - K @ H_j) @ sig_bar
+
+            # mu_bar, sig_bar, N_pt, countarr, hist_i = modifyPtLMs(iter, hist_i, countarr, [exp_pt_landm, exp_line_landm], 1, ind_j_pt, mu_bar, sig_bar, N_pt)
+
+    # Line landmarks
+    for j in range(len_obs_lin):
+        if obs_lin[j, 2] != 0:
+            ro = obs_lin[j, 0]
+            alpha = obs_lin[j, 1]
+            z = np.array([ro, alpha]).reshape(-1, 1)
+
+            isInter = chkIntersec(mu_bar, ro, alpha)
+
+            if isInter:
+                gam = alpha + mu_bar[2] - np.pi
+                r = mu_bar[0] * np.cos(gam) + mu_bar[1] * np.sin(gam) - ro
+                psi = gam
+            else:
+                gam = alpha + mu_bar[2]
+                r = ro + mu_bar[0] * np.cos(gam) + mu_bar[1] * np.sin(gam)
+                psi = gam
+            
+            mu_bar[1 + 2 * exp_pt_landm + 2 * (N_line + 1): 3 + 2 * exp_pt_landm + 2 * (N_line + 1)] = np.array([r, psi]).reshape(-1, 1)
+
+            pie = np.zeros(N_line + 1)
+            for k in range(N_line):
+                r = mu_bar[3 + 2 * exp_pt_landm + 2 * k]
+                psi = mu_bar[4 + 2 * exp_pt_landm + 2 * k]
+                isInter = chkIntersec3(mu_bar, r, psi) # Check if the line intersects with the robot's path
+                pie[k], _, _, _ = EKF_unknown_line_obs_correction_1(k, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_lin, z)
+            
+            print('\nLines pie: ', pie)
+            pie[N_line] = alp_line
+            ind_j_ln = np.argmin(pie)
+
+            r = mu_bar[3 + 2 * exp_pt_landm + 2 * ind_j_ln]
+            psi = mu_bar[4 + 2 * exp_pt_landm + 2 * ind_j_ln]
+            _, psi_j, H_j, z_j = EKF_unknown_line_obs_correction_1(ind_j_ln, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_lin, z)
+
+            N_line = max(N_line, ind_j_ln + 1)
+
+            K = sig_bar @ H_j.T @ np.linalg.inv(psi_j)
+
+            delta_mu = K @ (z - z_j)
+
+            if abs(delta_mu[0]) < 200 and abs(delta_mu[1]) < 200:
+                mu_bar = mu_bar + delta_mu
+                sig_bar = (np.eye(sig_bar.shape[0]) - K @ H_j) @ sig_bar
+                # mu_bar, sig_bar, N_line, countarr, hist_i, visLine_x, visLine_y = modifyLinLMs(iter, hist_i, countarr, [exp_pt_landm, exp_line_landm], 20, ind_j_ln, mu_bar, sig_bar, N_line, N_line + 1, z, visLine_x, visLine_y)
+
+    return mu_bar, sig_bar, N_pt, N_line, hist_i, countarr, visLine_x, visLine_y
 
 # Modify the mu and sigma matrices
 def modify_mu_sig(mu, Sig, ids, exp_LM):
@@ -1243,6 +1348,7 @@ def modifyLinLMs(i, hist_i, countarr, expN, val_ln, ind_ln, mu, Sig, N_line, max
 
     return mu, Sig, N_line, countarr, hist_i, visLine_x, visLine_y
 
+# Update the limits of the SLAM plot
 def updateLims(k, visLine_x, new_x):
     if visLine_x[k, 0] == 0:
         visLine_x[k, 0] = new_x[0]
@@ -1259,3 +1365,20 @@ def updateLims(k, visLine_x, new_x):
             visLine_x[k, 1] = new_x[0]
     return visLine_x
 
+# Checks whether the center is isolated from the rest 
+def chkIsolated(points, center, thresh1, thresh2):
+    iso = False
+    center = center.reshape(1, -1)
+    # draws two circles with different radii and check the number of inliers
+    # thresh1 and thresh2 are circle radii
+    # if both inlier counts are same, the center is isolated
+    L = points.shape[0] # number od points
+    dist = np.zeros(L) # stores the distance values
+
+    for p in range(L): # calculates the distances
+        dist[p] = np.linalg.norm(points[p] - center)
+    # pdb.set_trace()
+    if sum(dist < thresh1) == sum(dist < thresh2) > 0: # if the number of points are same inside both circles,
+        iso = True # the point is isolated
+
+    return iso

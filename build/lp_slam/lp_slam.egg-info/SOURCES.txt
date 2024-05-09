@@ -13,12 +13,15 @@ lp_slam/__init__.py
 lp_slam/ekf_node_unknown_pts_working.py
 lp_slam/kdf.py
 lp_slam/lp_node.py
+lp_slam/lp_node_sim.py
 lp_slam/tmp.py
+lp_slam/tmp_lp_node.py
 lp_slam/src/__init__.py
 lp_slam/src/ekf_funcs_anim.py
 lp_slam/src/ekf_funcs_lp.py
 lp_slam/src/gslam2d.py
 lp_slam/src/helper_plotting_functions.py
+lp_slam/src/tmp_ekf_funcs_lp.py
 resource/lp_slam
 test/test_copyright.py
 test/test_flake8.py

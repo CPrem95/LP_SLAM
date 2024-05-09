@@ -1,3 +1,4 @@
 [console_scripts]
 lp_node = lp_slam.lp_node:main
+lpsim_node = lp_slam.lp_node_sim:main
 

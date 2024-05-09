@@ -12,15 +12,21 @@ np.random.seed(10) # for reproducibility
 plt.ion()
 
 def main():
-    raw_plot = True
+    raw_plot = False #  Plot raw observations
+    slam_plot = True # Plot final SLAM output
+    use_simData = True # Use simulated data
+
+    # Refer the Section: #### "Observation Extraction" #### and check its flags 
+    # to turn on/off the visualization of the extracted lines and points
+
     print("Loading data...")
     # data = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab.mat')
     # data_gt = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab_gt.mat')
 
     data = scipy.io.loadmat('/home/arms/Documents/lab.mat')
     data_gt = scipy.io.loadmat('/home/arms/Documents/lab_gt.mat')
-    # print(data.keys())
 
+    # Figure for raw observations plot
     fig = plt.figure()
     ax = fig.add_subplot(111) 
     ax.set_aspect('equal', adjustable='box')
@@ -31,52 +37,65 @@ def main():
     ax.set_title('Odometry-based observations')
     plt.show()
 
-    n_pt_landm = 50
-    n_line_landm = 25
+    # Figure for final estimated lines and points plot
+    fig2 = plt.figure()
+    ax2 = fig2.add_subplot(111)
+    ax2.set_aspect('equal', adjustable='box')
+    plt.grid(linestyle="--", color='black', alpha=0.3)
+    ax2.set_xlabel('x [mm]')
+    ax2.set_ylabel('y [mm]')
+    ax2.set_title('Final SLAM output')
+    plt.show()
 
-    winsize = 100
-    cwinsize = 15
-    stepsize = 3
+    # Parameters
 
-    ini_landm_var = 1e6
-    ini_landm_var = 1e4
-    exp_pt_landm = n_pt_landm + 10
-    exp_line_landm = n_line_landm + 10
+    winsize = 100 # window size for a region
+    # cwinsize = 15 # for DBSCAN-based filtering, not used
+    stepsize = 3 # step size for the SLAM update window
+
+    ini_pt_landm_var = 1e6 # initial point landmark variance
+    ini_ln_landm_var = 1e4 # initial line landmark variance
+    exp_pt_landm = 50 # expected number of point landmarks
+    exp_line_landm = 25 # expected number of line landmarks
 
     visLine_x = np.zeros([exp_line_landm, 2])
     visLine_y = np.zeros([exp_line_landm, 2])
 
-    # obsLHS = np.zeros([6000, 5, 2])
-    # obsRHS = np.zeros([6000, 5, 2])
+    # Load data
     obsLHS = data['obsLHS']
     obsRHS = data['obsRHS']
-
-    # odom = np.zeros([6000, 3])
     odom = data['odom']
-    [s1, s2, s3] = obsLHS.shape
 
-    obsLHS = np.concatenate((obsLHS, np.zeros([stepsize + 2*winsize, 5, 2])), axis=0)
-    obsRHS = np.concatenate((obsRHS, np.zeros([stepsize + 2*winsize, 5, 2])), axis=0)
+    [s1, s2, s3] = obsLHS.shape # shape of the observations
+    # s1 : is the number of samples
+    # s2 : is the number of observations in each sample
+    # s3 : is the number of parameters for each observation e.g. xy
 
-    odom = np.concatenate((odom, np.tile(odom[-1], (stepsize + 2*winsize, 1))), axis=0)
+    obsLHS = np.concatenate((obsLHS, np.zeros([stepsize + 2*winsize, 5, 2])), axis=0) # padding zeros
+    obsRHS = np.concatenate((obsRHS, np.zeros([stepsize + 2*winsize, 5, 2])), axis=0) # padding zeros
 
-    new_obs = np.zeros([s1, 2*s2, s3])
+    odom = np.concatenate((odom, np.tile(odom[-1], (stepsize + 2*winsize, 1))), axis=0) # padding zeros
+
+    new_obs = np.zeros([s1, 2*s2, s3]) 
     obs_count = np.zeros([1, exp_pt_landm + exp_line_landm])
     hist_i = np.zeros([1, exp_pt_landm + exp_line_landm])
 
     # projection matrix
     F = np.block([np.eye(3), np.zeros([3, 2*exp_pt_landm + 2*exp_line_landm])])
+
+    # initial state
     ini_mu = np.zeros([3 + 2*exp_pt_landm + 2*exp_line_landm, 1])
 
+    # initial covariance matrix
     ini_cov_xx = np.zeros([3, 3])
     ini_cov_xp = np.zeros([3, 2*exp_pt_landm])
     ini_cov_px = np.zeros([2*exp_pt_landm, 3])
-    ini_cov_pp = ini_landm_var * np.eye(2*exp_pt_landm)
+    ini_cov_pp = ini_pt_landm_var * np.eye(2*exp_pt_landm)
     ini_cov_xl = np.zeros([3, 2*exp_line_landm])
     ini_cov_lx = np.zeros([2*exp_line_landm, 3])
     ini_cov_ml = np.zeros([2*exp_pt_landm, 2*exp_line_landm])
     ini_cov_lm = np.zeros([2*exp_line_landm, 2*exp_pt_landm])
-    ini_cov_ll = np.eye(2*exp_line_landm)*ini_landm_var
+    ini_cov_ll = np.eye(2*exp_line_landm)*ini_ln_landm_var
     ini_cov = np.block([[ini_cov_xx, ini_cov_xp, ini_cov_xl],
                         [ini_cov_px, ini_cov_pp, ini_cov_ml],
                         [ini_cov_lx, ini_cov_lm, ini_cov_ll]])
@@ -121,7 +140,7 @@ def main():
                   [0, 0, 0.0001]])
     
     # measurement noise points
-    Q_pts = np.array([[2500, 0],
+    Q_pts = np.array([[10000, 0],
                   [0, 0.25]])
     
     # measurement noise lines
@@ -131,12 +150,9 @@ def main():
     N_pts = 0 # no observed points in the beginning
     N_line = 0 # no observed lines in the beginning
 
-    I = []
-    N = 0
-
-    min_n_obs = 10
-    min_pts = 9
-    max_rad = 200
+    # min_n_obs = 10 # used in DBSCAN-based filtering, not used
+    # min_pts = 9
+    # max_rad = 200
 
     path_samples = odom.shape[0]
 
@@ -144,8 +160,6 @@ def main():
     est_y = np.zeros([path_samples, 1])
     est_th = np.zeros([path_samples, 1])
 
-    temp_mu1 = mu
-    temp_mu2 = mu
     mu_bar = mu
 
     all_lhs_obs = [] # all left hand side observations
@@ -166,8 +180,6 @@ def main():
     obs_lin = np.zeros([33, 10, 8])
     obs_pts = np.zeros([33, 10, 3])
 
-    count_i = 2
-
     stepend = path_samples - stepsize - winsize*2
 
     for i in range(path_samples):
@@ -186,6 +198,10 @@ def main():
 
     lhs_obs_xy = np.array(all_lhs_obs).reshape(-1, 2)
     rhs_obs_xy = np.array(all_rhs_obs).reshape(-1, 2)
+
+    ############################################################################################################
+    ## Raw observations plot
+    ############################################################################################################
 
     # Odometry plot
     odoms, = ax.plot([], [], linewidth = 2, c='k', marker='o', label='Odometry')
@@ -243,11 +259,41 @@ def main():
     # ax.set_ylim(-6000, 10000)
 
     # time.sleep(5)
+
+    ############################################################################################################
+    ## SLAM Plot
+    ############################################################################################################
+    
+    # Estimated path plot
+    raw_odom, = ax2.plot([], [], linewidth = 2, c='k', label='Raw path')
+    fig2.canvas.draw()
+    est_path, = ax2.plot([], [], linewidth = 2, c='b', label='Est path')
+    fig2.canvas.draw()
+    # Estimated point landmarks plot
+    est_pt_lms = ax2.scatter([], [], s=30, c='red', marker='o', label='Est Pt LMs')
+    fig2.canvas.draw()
+    # Estimated line landmarks plot
+    est_ln_lms = []
+    for i in range(20):
+        tmp_plt_ln_all, = ax2.plot([], [], c='red', linewidth = 2, linestyle= '-', label='Est Ln LMs')
+        est_ln_lms.append(tmp_plt_ln_all)
+        fig.canvas.draw()
+
+    # Legend
+    fig2.legend(handles=[raw_odom, est_path, est_pt_lms, tmp_plt_ln_all], loc='upper right')
+    fig2.canvas.flush_events()
+    
+    ############################################################################################################
+    ## SLAM
+    ############################################################################################################
+
+    ## Define the window size for BOTH REGIONS R12
     winsize2 = int(1.5*winsize) # 1.5 times the window size for both regions
 
     for i in range(0, stepend, stepsize):
+        print('\n----------------------------------------------------------------------------')
         print('i:', i)
-        # if i > 111:
+        # if N_pts > 12:
         #     print('i:', i)
         #     pdb.set_trace()
 
@@ -282,15 +328,23 @@ def main():
         # prediction
         mu_bar, sig_bar = ekf.ekf_unkown_predict(mu, sig, u, R, F)
 
-        rob_obs_pose = mu_bar[0:3]
+
+        ############################################################################################################
+        ## Observation Extraction
+        ############################################################################################################
+        # rob_obs_pose = mu_bar[0:3]
+        rob_obs_pose = odom1.reshape(-1, 1)
         minNNI_12 = 50
 
         odom_R12 = odom[i:i+winsize2, :]
         odom_R1 = odom[i:i+winsize, :]
 
-        vis_PL12 = True # REGION 12 line and point visualization
-        vis_PL1 = True # REGION 1 line and point visualization
-        vis_PL_all = True # FINAL All line and point visualization
+        # REGION 12 line and point visualization
+        # REGION 1 line and point visualization
+        # FINAL All line and point visualization
+        vis_PL12, vis_PL1, vis_PL_all = True, True, True
+        if not raw_plot: 
+            vis_PL12, vis_PL1, vis_PL_all = False, False, False
 
         # LHS observations REGION 12
         vis = False # visualize regressed lines
@@ -335,11 +389,10 @@ def main():
         # Filter observations::
         obs_Lin, obs_Pt = ekf.createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12, 
                                         N_LMs_rhs_1, L_LMs_rhs_1, P_LMs_rhs_1, N_LMs_rhs_12, L_LMs_rhs_12, 
-                                        mu, mu_bar, N_line, exp_pt_landm, obs_lhs_R12, obs_rhs_R12, visLine_x, visLine_y, vis_PL_all, plt_lines_all, plt_points_all)
+                                        rob_obs_pose, mu, mu_bar, N_line, exp_pt_landm, visLine_x, visLine_y, vis_PL_all, plt_lines_all, plt_points_all) 
 
-
+        # Plot the observations
         if raw_plot and 1:
-            # Plot the observations
             plt_obs_lhs_R1.set_offsets(obs_lhs_R1)
             fig.canvas.draw() 
             plt_obs_rhs_R1.set_offsets(obs_rhs_R1)
@@ -351,7 +404,7 @@ def main():
             # Plot the odometry
             odoms.set_xdata(odom[i:i+stepsize, 0])
             odoms.set_ydata(odom[i:i+stepsize, 1])
-            set_line(fig, odom_dir, odom1)
+            set_odom_dir(fig, odom_dir, odom1)
             # ax.relim()  # Recalculate the data limits
             # ax.autoscale()  # Adjust the axis limits
             
@@ -367,11 +420,71 @@ def main():
         # if i > 50:
         #     time.sleep(10000)
         #     break
-    
+
+        ############################################################################################################
+        ## EKF Update
+        ############################################################################################################
+        mu, sig, N_pts, N_line, hist_i, obs_count, visLine_x, visLine_y = ekf.EKF_unknown_correction_LP(mu_bar, sig_bar, obs_lhs_R12, obs_rhs_R12, obs_Pt, obs_Lin, Q_pts, Q_lines, i, hist_i, obs_count, exp_pt_landm, exp_line_landm, N_pts, N_line, visLine_x, visLine_y, 1, 5)
+        print("\nObserved LMs: ", N_pts, N_line)
+        x_history.append(mu[0][0])
+        y_history.append(mu[1][0])
+        th_history.append(mu[2][0])
+
+        ############################################################################################################
+        ## SLAM Animation
+        ############################################################################################################
+        if slam_plot:
+            # Plot the raw odometry
+            raw_odom.set_xdata(odom[0:i+stepsize, 0])
+            raw_odom.set_ydata(odom[0:i+stepsize, 1])
+            # Plot the estimated path
+            est_path.set_xdata(x_history)
+            est_path.set_ydata(y_history)
+            # Plot the estimated landmarks
+            # print("mu:", mu[3:3+2*N_pts].reshape(-1, 2))
+            # print("mu:", mu)
+            est_pt_lms.set_offsets(mu[3:3+2*N_pts].reshape(-1, 2))
+            # for i in range(N_line):
+            #     est_ln_lms[i].set_xdata([mu[3+2*exp_pt_landm + 2*i][0], mu[3+2*exp_pt_landm + 2*i+1][0]])
+            #     est_ln_lms[i].set_ydata([mu[3+2*exp_pt_landm + 2*i][1], mu[3+2*exp_pt_landm + 2*i+1][1]])
+
+            # Adjust the axis limits
+            set_limits(ax2, np.concatenate((obs_lhs_R12, obs_rhs_R12), axis=0), odom[0:i+stepsize, :])
+            fig2.canvas.draw()
+
+            # Plot the estimated landmarks
+            # Lines
+            lnstart = exp_pt_landm*2 + 3
+            pi = math.pi
+            for lin_i in range (N_line):
+                
+                line_r = mu[2*lin_i + lnstart]
+                line_th = mu[2*lin_i + lnstart + 1]
+
+                line_m = math.tan(pi/2 + line_th)
+                line_c = line_r/math.sin(line_th)
+
+                if abs(abs(line_th) - pi/2) < pi/4:
+                    x = visLine_x[lin_i, :]
+                    y = line_m*x + line_c
+                else:
+                    y = visLine_y[lin_i, :]
+                    x = (y - line_c)/line_m
+
+                est_ln_lms[lin_i].set_xdata(x)
+                est_ln_lms[lin_i].set_ydata(y)
+                fig.canvas.draw()
+            
+            # Points
+            est_pt_lms.set_offsets(mu[3:3+2*N_pts].reshape(-1, 2))
+            fig.canvas.draw()
+
+            fig2.canvas.flush_events()
+
     pdb.set_trace()
         
 
-        
+## User-defined FUNCTIONS 
 def set_limits(ax, X, odom = []):
     # odom = np.array(odom).reshape(-1, 2)
     # print("odom:", odom)
@@ -383,19 +496,12 @@ def set_limits(ax, X, odom = []):
     ax.set_xlim(xmin-0.1*(xmax-xmin) - 1000, xmax+0.1*(xmax-xmin) + 1000)
     ax.set_ylim(ymin-0.1*(ymax-ymin) - 1000, ymax+0.1*(ymax-ymin) + 1000)
 
-def set_line(fig, odom_dir, odom1):
+def set_odom_dir(fig, odom_dir, odom1):
     # Set the direction of the odometry
     odom_dir.set_xdata([odom1[0], odom1[0] + 200*math.cos(odom1[2])])
     odom_dir.set_ydata([odom1[1], odom1[1] + 200*math.sin(odom1[2])])
     fig.canvas.draw()
     fig.canvas.flush_events()
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

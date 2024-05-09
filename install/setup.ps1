@@ -26,6 +26,7 @@ _colcon_prefix_chain_powershell_source_script "/opt/ros/iron\local_setup.ps1"
 _colcon_prefix_chain_powershell_source_script "/home/arms/ros2_driver_mmwave/install\local_setup.ps1"
 _colcon_prefix_chain_powershell_source_script "/home/arms/p440_ws/install\local_setup.ps1"
 _colcon_prefix_chain_powershell_source_script "/home/arms/X4M300_ws/install\local_setup.ps1"
+_colcon_prefix_chain_powershell_source_script "/home/arms/turtlebot3_ws/install\local_setup.ps1"
 
 # source this prefix
 $env:COLCON_CURRENT_PREFIX=(Split-Path $PSCommandPath -Parent)
