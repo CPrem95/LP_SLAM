@@ -12,7 +12,7 @@ np.random.seed(10) # for reproducibility
 plt.ion()
 
 def main():
-    raw_plot = False #  Plot raw observations
+    raw_plot = True #  Plot raw observations
     slam_plot = True # Plot final SLAM output
     use_simData = True # Use simulated data
 
@@ -23,7 +23,19 @@ def main():
     # data = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab.mat')
     # data_gt = scipy.io.loadmat('/home/arms/paper3_ws/src/ekf_slam/lp_slam/lab_gt.mat')
 
-    data = scipy.io.loadmat('/home/arms/Documents/lab.mat')
+    '''
+    ### changed parameters:
+    # lift.mat
+    fitransac >> maxDistance = 20
+    L_len_thresh_1 = 450
+    alp_pt, alp_line = 1, 0.5
+
+    # lab.mat
+    fitransac >> maxDistance = 30
+    L_len_thresh_1 = 350
+    alp_pt, alp_line = 1, 5
+    '''
+    data = scipy.io.loadmat('/home/arms/Documents/lift.mat')
     data_gt = scipy.io.loadmat('/home/arms/Documents/lab_gt.mat')
 
     # Figure for raw observations plot
@@ -56,7 +68,7 @@ def main():
     ini_pt_landm_var = 1e6 # initial point landmark variance
     ini_ln_landm_var = 1e4 # initial line landmark variance
     exp_pt_landm = 50 # expected number of point landmarks
-    exp_line_landm = 25 # expected number of line landmarks
+    exp_line_landm = 50 # expected number of line landmarks
 
     visLine_x = np.zeros([exp_line_landm, 2])
     visLine_y = np.zeros([exp_line_landm, 2])
@@ -70,11 +82,20 @@ def main():
     # s1 : is the number of samples
     # s2 : is the number of observations in each sample
     # s3 : is the number of parameters for each observation e.g. xy
+    
+    odom = np.concatenate((np.zeros([1, 3]), odom), axis=0) # padding zeros to the beginning
+    ''' for lab.mat
+    obsLHS = np.concatenate((np.zeros([1, 5, 2]), obsLHS), axis=0) # padding zeros to the beginning
+    obsRHS = np.concatenate((np.zeros([1, 5, 2]), obsRHS), axis=0) # padding zeros to the beginning
+    '''
+    # for lift.mat
+    obsLHS = np.concatenate((np.zeros([1, s2, 2]), obsLHS), axis=0) # padding zeros to the beginning
+    obsRHS = np.concatenate((np.zeros([1, s2, 2]), obsRHS), axis=0) # padding zeros to the beginning
 
-    obsLHS = np.concatenate((obsLHS, np.zeros([stepsize + 2*winsize, 5, 2])), axis=0) # padding zeros
-    obsRHS = np.concatenate((obsRHS, np.zeros([stepsize + 2*winsize, 5, 2])), axis=0) # padding zeros
+    obsLHS = np.concatenate((obsLHS, np.zeros([stepsize + 2*winsize, s2, 2])), axis=0) # padding zeros to the end
+    obsRHS = np.concatenate((obsRHS, np.zeros([stepsize + 2*winsize, s2, 2])), axis=0) # padding zeros to the end
 
-    odom = np.concatenate((odom, np.tile(odom[-1], (stepsize + 2*winsize, 1))), axis=0) # padding zeros
+    odom = np.concatenate((odom, np.tile(odom[-1], (stepsize + 2*winsize, 1))), axis=0) # padding zeros to the end
 
     new_obs = np.zeros([s1, 2*s2, s3]) 
     obs_count = np.zeros([1, exp_pt_landm + exp_line_landm])
@@ -101,31 +122,28 @@ def main():
                         [ini_cov_lx, ini_cov_lm, ini_cov_ll]])
 
     # (1,2) Regions
-    nni_thresh_12 = 0.5
     N_inl_thresh_12 = 45
     L_len_thresh_12 = 600
     r_thresh_12 = 300
     th_thresh_12 = math.radians(10)
-    thresh_12 = [nni_thresh_12, N_inl_thresh_12, L_len_thresh_12, r_thresh_12, th_thresh_12]
+    thresh_12 = [N_inl_thresh_12, L_len_thresh_12, r_thresh_12, th_thresh_12]
 
     # (1) Regions   
-    nni_thresh_1 = 0.15
     N_inl_thresh_1 = 30
-    L_len_thresh_1 = 350
+    L_len_thresh_1 = 500
     r_thresh_1 = 100
     th_thresh_1 = math.radians(10)
-    thresh_1 = [nni_thresh_1, N_inl_thresh_1, L_len_thresh_1, r_thresh_1, th_thresh_1]
+    thresh_1 = [N_inl_thresh_1, L_len_thresh_1, r_thresh_1, th_thresh_1]
     N_LMs_1 = np.zeros([1,2])
     L_LMs_1 = np.zeros([10,3])
     P_LMs_1 = np.zeros([20,3])
 
     # (2) Regions
-    nni_thresh_2 = 0.15
     N_inl_thresh_2 = 30
     L_len_thresh_2 = 350
     r_thresh_2 = r_thresh_1
     th_thresh_2 = th_thresh_1
-    thresh_2 = [nni_thresh_2, N_inl_thresh_2, L_len_thresh_2, r_thresh_2, th_thresh_2]
+    thresh_2 = [N_inl_thresh_2, L_len_thresh_2, r_thresh_2, th_thresh_2]
     N_LMs_2 = np.zeros([1,2])
     L_LMs_2 = np.zeros([10,3])
     P_LMs_2 = np.zeros([20,3])
@@ -289,10 +307,112 @@ def main():
 
     ## Define the window size for BOTH REGIONS R12
     winsize2 = int(1.5*winsize) # 1.5 times the window size for both regions
-
-    for i in range(0, stepend, stepsize):
+    ## main loop
+    for i in range(8301, stepend, stepsize):
         print('\n----------------------------------------------------------------------------')
         print('i:', i)
+        if i == 7500:
+            save = False
+            load = False
+            if save:
+                with open("mu.pickle", "wb") as f:
+                    pickle.dump(mu, f)
+                with open("sig.pickle", "wb") as f:
+                    pickle.dump(sig, f)
+                with open("N_pts.pickle", "wb") as f:
+                    pickle.dump(N_pts, f)
+                with open("N_line.pickle", "wb") as f:
+                    pickle.dump(N_line, f)
+                with open("obs_count.pickle", "wb") as f:
+                    pickle.dump(obs_count, f)
+                with open("hist_i.pickle", "wb") as f:
+                    pickle.dump(hist_i, f)
+                with open("visLine_x.pickle", "wb") as f:
+                    pickle.dump(visLine_x, f)
+                with open("visLine_y.pickle", "wb") as f:
+                    pickle.dump(visLine_y, f)
+                with open("x_history.pickle", "wb") as f:
+                    pickle.dump(x_history, f)
+                with open("y_history.pickle", "wb") as f:
+                    pickle.dump(y_history, f)
+                with open("th_history.pickle", "wb") as f:
+                    pickle.dump(th_history, f)
+            if load:
+                with open("mu.pickle", "rb") as f:
+                    mu = pickle.load(f)
+                with open("sig.pickle", "rb") as f:
+                    sig = pickle.load(f)
+                with open("N_pts.pickle", "rb") as f:
+                    N_pts = pickle.load(f)
+                with open("N_line.pickle", "rb") as f:
+                    N_line = pickle.load(f)
+                with open("obs_count.pickle", "rb") as f:
+                    obs_count = pickle.load(f)
+                with open("hist_i.pickle", "rb") as f:
+                    hist_i = pickle.load(f)
+                with open("visLine_x.pickle", "rb") as f:
+                    visLine_x = pickle.load(f)
+                with open("visLine_y.pickle", "rb") as f:
+                    visLine_y = pickle.load(f)
+                with open("x_history.pickle", "rb") as f:
+                    x_history = pickle.load(f)
+                with open("y_history.pickle", "rb") as f:
+                    y_history = pickle.load(f)
+                with open("th_history.pickle", "rb") as f:
+                    th_history = pickle.load(f)
+            pdb.set_trace()
+        
+        if i == 8301:
+            save = False
+            load = True
+            if save:
+                with open("mu.pickle", "wb") as f:
+                    pickle.dump(mu, f)
+                with open("sig.pickle", "wb") as f:
+                    pickle.dump(sig, f)
+                with open("N_pts.pickle", "wb") as f:
+                    pickle.dump(N_pts, f)
+                with open("N_line.pickle", "wb") as f:
+                    pickle.dump(N_line, f)
+                with open("obs_count.pickle", "wb") as f:
+                    pickle.dump(obs_count, f)
+                with open("hist_i.pickle", "wb") as f:
+                    pickle.dump(hist_i, f)
+                with open("visLine_x.pickle", "wb") as f:
+                    pickle.dump(visLine_x, f)
+                with open("visLine_y.pickle", "wb") as f:
+                    pickle.dump(visLine_y, f)
+                with open("x_history.pickle", "wb") as f:
+                    pickle.dump(x_history, f)
+                with open("y_history.pickle", "wb") as f:
+                    pickle.dump(y_history, f)
+                with open("th_history.pickle", "wb") as f:
+                    pickle.dump(th_history, f)
+            if load:
+                with open("mu.pickle", "rb") as f:
+                    mu = pickle.load(f)
+                with open("sig.pickle", "rb") as f:
+                    sig = pickle.load(f)
+                with open("N_pts.pickle", "rb") as f:
+                    N_pts = pickle.load(f)
+                with open("N_line.pickle", "rb") as f:
+                    N_line = pickle.load(f)
+                with open("obs_count.pickle", "rb") as f:
+                    obs_count = pickle.load(f)
+                with open("hist_i.pickle", "rb") as f:
+                    hist_i = pickle.load(f)
+                with open("visLine_x.pickle", "rb") as f:
+                    visLine_x = pickle.load(f)
+                with open("visLine_y.pickle", "rb") as f:
+                    visLine_y = pickle.load(f)
+                with open("x_history.pickle", "rb") as f:
+                    x_history = pickle.load(f)
+                with open("y_history.pickle", "rb") as f:
+                    y_history = pickle.load(f)
+                with open("th_history.pickle", "rb") as f:
+                    th_history = pickle.load(f)
+            pdb.set_trace()
+
         # if N_pts > 12:
         #     print('i:', i)
         #     pdb.set_trace()
@@ -328,12 +448,36 @@ def main():
         # prediction
         mu_bar, sig_bar = ekf.ekf_unkown_predict(mu, sig, u, R, F)
 
+        # Update the observations based on the predicted odometry
+        del_odom = odom0 - mu[0:3].reshape(1, -1)[0] # difference between the predicted and the actual odometry
+        # print('del_odom:', del_odom)
+        # obs_lhs_R1 = obs_lhs_R1 - del_odom[:2]
+        # obs_rhs_R1 = obs_rhs_R1 - del_odom[:2]
+        # obs_lhs_R12 = obs_lhs_R12 - del_odom[:2]
+        # obs_rhs_R12 = obs_rhs_R12 - del_odom[:2]
+        
+        obs_lhs_R1 = obs_lhs_R1 - odom1[:2]
+        obs_rhs_R1 = obs_rhs_R1 - odom1[:2]
+        obs_lhs_R12 = obs_lhs_R12 - odom1[:2]
+        obs_rhs_R12 = obs_rhs_R12 - odom1[:2]
 
+        # Rotate the observations to the robot frame
+        res_mu_bar = mu_bar[0:2].reshape(1, -1)[0]
+        # obs_lhs_R1 = ekf.rotate_points(obs_lhs_R1, -del_odom[2]) + res_mu_bar
+        # obs_rhs_R1 = ekf.rotate_points(obs_rhs_R1, -del_odom[2]) + res_mu_bar
+        # obs_lhs_R12 = ekf.rotate_points(obs_lhs_R12, -del_odom[2]) + res_mu_bar
+        # obs_rhs_R12 = ekf.rotate_points(obs_rhs_R12, -del_odom[2]) + res_mu_bar
+
+        obs_lhs_R1 = ekf.rotate_points(obs_lhs_R1, del_odom[2]) + res_mu_bar
+        obs_rhs_R1 = ekf.rotate_points(obs_rhs_R1, del_odom[2]) + res_mu_bar
+        obs_lhs_R12 = ekf.rotate_points(obs_lhs_R12, del_odom[2]) + res_mu_bar
+        obs_rhs_R12 = ekf.rotate_points(obs_rhs_R12, del_odom[2]) + res_mu_bar
+        
         ############################################################################################################
         ## Observation Extraction
         ############################################################################################################
         # rob_obs_pose = mu_bar[0:3]
-        rob_obs_pose = odom1.reshape(-1, 1)
+        rob_obs_pose = mu_bar[0:3].reshape(-1, 1)
         minNNI_12 = 50
 
         odom_R12 = odom[i:i+winsize2, :]
@@ -348,6 +492,7 @@ def main():
 
         # LHS observations REGION 12
         vis = False # visualize regressed lines
+        # print('Region 12 LHS observations:')
         d_thresh = 300
         N_LMs_lhs_12 = np.zeros([2], dtype=int)
         N_LMs_lhs_12, L_LMs_lhs_12 = ekf.lineExtract(obs_lhs_R12, odom_R12, rob_obs_pose, thresh_12, N_LMs_lhs_12, minNNI_12, vis) # Extract lines from the observations
@@ -358,6 +503,7 @@ def main():
 
         # RHS observations REGION 12
         vis = False # visualize regressed lines
+        # print('Region 12 RHS observations:')
         d_thresh = 300
         N_LMs_rhs_12 = np.zeros([2], dtype=int)
         N_LMs_rhs_12, L_LMs_rhs_12 = ekf.lineExtract(obs_rhs_R12, odom_R12, rob_obs_pose, thresh_12, N_LMs_rhs_12, minNNI_12, vis) # Extract lines from the observations
@@ -368,6 +514,7 @@ def main():
 
         # LHS observations REGION 1
         vis = False
+        # print('Region 1 LHS observations:')
         d_thresh = 100
         N_LMs_lhs_1 = np.zeros([2], dtype=int)
         N_LMs_lhs_1, L_LMs_lhs_1 = ekf.lineExtract(obs_lhs_R1, odom_R1, rob_obs_pose, thresh_1, N_LMs_lhs_1, minNNI_12, vis) # Extract lines from the observations
@@ -378,6 +525,7 @@ def main():
 
         # RHS observations REGION 1
         vis = False
+        # print('Region 1 RHS observations:')
         d_thresh = 100
         N_LMs_rhs_1 = np.zeros([2], dtype=int)
         N_LMs_rhs_1, L_LMs_rhs_1 = ekf.lineExtract(obs_rhs_R1, odom_R1, rob_obs_pose, thresh_1, N_LMs_rhs_1, minNNI_12, vis) # Extract lines from the observations
@@ -402,9 +550,10 @@ def main():
             plt_obs_rhs_R12.set_offsets(obs_rhs_R12)
             fig.canvas.draw()
             # Plot the odometry
-            odoms.set_xdata(odom[i:i+stepsize, 0])
-            odoms.set_ydata(odom[i:i+stepsize, 1])
-            set_odom_dir(fig, odom_dir, odom1)
+            odoms.set_xdata(odom[i:i+stepsize, 0] - del_odom[0])
+            odoms.set_ydata(odom[i:i+stepsize, 1] - del_odom[1])
+            set_odom_dir(fig, odom_dir, odom1 - del_odom)
+
             # ax.relim()  # Recalculate the data limits
             # ax.autoscale()  # Adjust the axis limits
             
@@ -424,7 +573,7 @@ def main():
         ############################################################################################################
         ## EKF Update
         ############################################################################################################
-        mu, sig, N_pts, N_line, hist_i, obs_count, visLine_x, visLine_y = ekf.EKF_unknown_correction_LP(mu_bar, sig_bar, obs_lhs_R12, obs_rhs_R12, obs_Pt, obs_Lin, Q_pts, Q_lines, i, hist_i, obs_count, exp_pt_landm, exp_line_landm, N_pts, N_line, visLine_x, visLine_y, 1, 5)
+        mu, sig, N_pts, N_line, hist_i, obs_count, visLine_x, visLine_y = ekf.EKF_unknown_correction_LP(mu_bar, sig_bar, rob_obs_pose, obs_lhs_R12, obs_rhs_R12, obs_Pt, obs_Lin, Q_pts, Q_lines, i, hist_i, obs_count, exp_pt_landm, exp_line_landm, N_pts, N_line, visLine_x, visLine_y, 0.1, 0.6) # alp_pt, alp_line
         print("\nObserved LMs: ", N_pts, N_line)
         x_history.append(mu[0][0])
         y_history.append(mu[1][0])
@@ -502,7 +651,6 @@ def set_odom_dir(fig, odom_dir, odom1):
     odom_dir.set_ydata([odom1[1], odom1[1] + 200*math.sin(odom1[2])])
     fig.canvas.draw()
     fig.canvas.flush_events()
-
 
 if __name__ == '__main__':
     main()

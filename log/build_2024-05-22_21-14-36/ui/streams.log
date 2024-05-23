@@ -1,0 +1,19 @@
+[1.146s] Invoking command in '/home/arms/paper3_ws/src/ui': PYTHONPATH=/home/arms/paper3_ws/build/ui/prefix_override:/home/arms/paper3_ws/install/ui/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/ui build --build-base /home/arms/paper3_ws/build/ui/build install --record /home/arms/paper3_ws/build/ui/install.log --single-version-externally-managed install_data
+[1.424s] running egg_info
+[1.425s] writing ../../build/ui/ui.egg-info/PKG-INFO
+[1.425s] writing dependency_links to ../../build/ui/ui.egg-info/dependency_links.txt
+[1.425s] writing entry points to ../../build/ui/ui.egg-info/entry_points.txt
+[1.425s] writing requirements to ../../build/ui/ui.egg-info/requires.txt
+[1.425s] writing top-level names to ../../build/ui/ui.egg-info/top_level.txt
+[1.428s] reading manifest file '../../build/ui/ui.egg-info/SOURCES.txt'
+[1.429s] running build
+[1.429s] running build_py
+[1.429s] running install
+[1.434s] running install_lib
+[1.435s] running install_data
+[1.436s] running install_egg_info
+[1.438s] running install_scripts
+[1.456s] Installing feed_mu script to /home/arms/paper3_ws/install/ui/lib/ui
+[1.456s] Installing slam_node script to /home/arms/paper3_ws/install/ui/lib/ui
+[1.456s] Installing ui_node script to /home/arms/paper3_ws/install/ui/lib/ui
+[1.480s] Invoked command in '/home/arms/paper3_ws/src/ui' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/ui/prefix_override:/home/arms/paper3_ws/install/ui/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/ui build --build-base /home/arms/paper3_ws/build/ui/build install --record /home/arms/paper3_ws/build/ui/install.log --single-version-externally-managed install_data

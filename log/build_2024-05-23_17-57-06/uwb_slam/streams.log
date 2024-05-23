@@ -1,0 +1,21 @@
+[3.332s] Invoking command in '/home/arms/paper3_ws/src/uwb_slam': PYTHONPATH=/home/arms/paper3_ws/build/uwb_slam/prefix_override:/home/arms/paper3_ws/install/uwb_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/uwb_slam build --build-base /home/arms/paper3_ws/build/uwb_slam/build install --record /home/arms/paper3_ws/build/uwb_slam/install.log --single-version-externally-managed install_data
+[4.332s] running egg_info
+[4.335s] writing ../../build/uwb_slam/uwb_slam.egg-info/PKG-INFO
+[4.335s] writing dependency_links to ../../build/uwb_slam/uwb_slam.egg-info/dependency_links.txt
+[4.335s] writing entry points to ../../build/uwb_slam/uwb_slam.egg-info/entry_points.txt
+[4.336s] writing requirements to ../../build/uwb_slam/uwb_slam.egg-info/requires.txt
+[4.336s] writing top-level names to ../../build/uwb_slam/uwb_slam.egg-info/top_level.txt
+[4.348s] reading manifest file '../../build/uwb_slam/uwb_slam.egg-info/SOURCES.txt'
+[4.349s] adding license file 'LICENSE'
+[4.351s] running build
+[4.351s] running build_py
+[4.353s] running install
+[4.377s] running install_lib
+[4.382s] running install_data
+[4.383s] running install_egg_info
+[4.392s] running install_scripts
+[4.488s] Installing init_ancs script to /home/arms/paper3_ws/install/uwb_slam/lib/uwb_slam
+[4.489s] Installing run_SLAM script to /home/arms/paper3_ws/install/uwb_slam/lib/uwb_slam
+[4.490s] Installing test_LM script to /home/arms/paper3_ws/install/uwb_slam/lib/uwb_slam
+[4.490s] Installing test_rot script to /home/arms/paper3_ws/install/uwb_slam/lib/uwb_slam
+[4.608s] Invoked command in '/home/arms/paper3_ws/src/uwb_slam' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/uwb_slam/prefix_override:/home/arms/paper3_ws/install/uwb_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/uwb_slam build --build-base /home/arms/paper3_ws/build/uwb_slam/build install --record /home/arms/paper3_ws/build/uwb_slam/install.log --single-version-externally-managed install_data

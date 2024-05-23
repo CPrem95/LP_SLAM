@@ -1,0 +1,19 @@
+[1.864s] Invoking command in '/home/arms/paper3_ws/src/ekf_slam': PYTHONPATH=/home/arms/paper3_ws/build/lp_slam/prefix_override:/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/lp_slam build --build-base /home/arms/paper3_ws/build/lp_slam/build install --record /home/arms/paper3_ws/build/lp_slam/install.log --single-version-externally-managed install_data
+[2.173s] running egg_info
+[2.174s] writing ../../build/lp_slam/lp_slam.egg-info/PKG-INFO
+[2.175s] writing dependency_links to ../../build/lp_slam/lp_slam.egg-info/dependency_links.txt
+[2.176s] writing entry points to ../../build/lp_slam/lp_slam.egg-info/entry_points.txt
+[2.176s] writing requirements to ../../build/lp_slam/lp_slam.egg-info/requires.txt
+[2.176s] writing top-level names to ../../build/lp_slam/lp_slam.egg-info/top_level.txt
+[2.186s] reading manifest file '../../build/lp_slam/lp_slam.egg-info/SOURCES.txt'
+[2.187s] adding license file 'LICENSE'
+[2.188s] running build
+[2.188s] running build_py
+[2.188s] running install
+[2.194s] running install_lib
+[2.199s] running install_data
+[2.200s] running install_egg_info
+[2.205s] running install_scripts
+[2.222s] Installing lp_node script to /home/arms/paper3_ws/install/lp_slam/lib/lp_slam
+[2.222s] Installing lpsim_node script to /home/arms/paper3_ws/install/lp_slam/lib/lp_slam
+[2.255s] Invoked command in '/home/arms/paper3_ws/src/ekf_slam' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/lp_slam/prefix_override:/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/lp_slam build --build-base /home/arms/paper3_ws/build/lp_slam/build install --record /home/arms/paper3_ws/build/lp_slam/install.log --single-version-externally-managed install_data

@@ -1,0 +1,52 @@
+[0.355s] Invoking command in '/home/arms/paper3_ws/build/uwb_ranger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/arms/paper3_ws/install/uwb_slam:/home/arms/paper3_ws/install/ui:/home/arms/paper3_ws/install/lp_slam:/home/arms/X4M300_ws/install/python_parameters:/home/arms/X4M300_ws/install/novelda_x4m300:/home/arms/p440_ws/install/uwb_slam:/home/arms/p440_ws/install/uwb_raw_vis:/home/arms/p440_ws/install/ui:/home/arms/p440_ws/install/ekf_slam:/home/arms/ros2_driver_mmwave/install/save_db:/opt/ros/iron /usr/bin/cmake --build /home/arms/paper3_ws/build/uwb_ranger -- -j20 -l20
+[0.360s] /usr/bin/cmake -S/home/arms/paper3_ws/src/uwb_range -B/home/arms/paper3_ws/build/uwb_ranger --check-build-system CMakeFiles/Makefile.cmake 0
+[0.366s] /usr/bin/cmake -E cmake_progress_start /home/arms/paper3_ws/build/uwb_ranger/CMakeFiles /home/arms/paper3_ws/build/uwb_ranger//CMakeFiles/progress.marks
+[0.371s] /usr/bin/gmake  -f CMakeFiles/Makefile2 all
+[0.371s] gmake[1]: Entering directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.372s] /usr/bin/gmake  -f CMakeFiles/ranger.dir/build.make CMakeFiles/ranger.dir/depend
+[0.372s] /usr/bin/gmake  -f CMakeFiles/ranger2.dir/build.make CMakeFiles/ranger2.dir/depend
+[0.373s] gmake[2]: Entering directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.373s] cd /home/arms/paper3_ws/build/uwb_ranger && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/arms/paper3_ws/src/uwb_range /home/arms/paper3_ws/src/uwb_range /home/arms/paper3_ws/build/uwb_ranger /home/arms/paper3_ws/build/uwb_ranger /home/arms/paper3_ws/build/uwb_ranger/CMakeFiles/ranger.dir/DependInfo.cmake --color=
+[0.373s] gmake[2]: Entering directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.373s] cd /home/arms/paper3_ws/build/uwb_ranger && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/arms/paper3_ws/src/uwb_range /home/arms/paper3_ws/src/uwb_range /home/arms/paper3_ws/build/uwb_ranger /home/arms/paper3_ws/build/uwb_ranger /home/arms/paper3_ws/build/uwb_ranger/CMakeFiles/ranger2.dir/DependInfo.cmake --color=
+[0.378s] gmake[2]: Leaving directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.378s] /usr/bin/gmake  -f CMakeFiles/ranger.dir/build.make CMakeFiles/ranger.dir/build
+[0.378s] gmake[2]: Leaving directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.378s] /usr/bin/gmake  -f CMakeFiles/ranger2.dir/build.make CMakeFiles/ranger2.dir/build
+[0.380s] gmake[2]: Entering directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.380s] gmake[2]: Nothing to be done for 'CMakeFiles/ranger.dir/build'.
+[0.380s] gmake[2]: Leaving directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.380s] gmake[2]: Entering directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.380s] gmake[2]: Nothing to be done for 'CMakeFiles/ranger2.dir/build'.
+[0.380s] gmake[2]: Leaving directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.384s] [100%] Built target ranger
+[0.384s] [100%] Built target ranger2
+[0.385s] gmake[1]: Leaving directory '/home/arms/paper3_ws/build/uwb_ranger'
+[0.385s] /usr/bin/cmake -E cmake_progress_start /home/arms/paper3_ws/build/uwb_ranger/CMakeFiles 0
+[0.548s] Invoked command in '/home/arms/paper3_ws/build/uwb_ranger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/arms/paper3_ws/install/uwb_slam:/home/arms/paper3_ws/install/ui:/home/arms/paper3_ws/install/lp_slam:/home/arms/X4M300_ws/install/python_parameters:/home/arms/X4M300_ws/install/novelda_x4m300:/home/arms/p440_ws/install/uwb_slam:/home/arms/p440_ws/install/uwb_raw_vis:/home/arms/p440_ws/install/ui:/home/arms/p440_ws/install/ekf_slam:/home/arms/ros2_driver_mmwave/install/save_db:/opt/ros/iron /usr/bin/cmake --build /home/arms/paper3_ws/build/uwb_ranger -- -j20 -l20
+[0.573s] Invoking command in '/home/arms/paper3_ws/build/uwb_ranger': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/arms/paper3_ws/install/uwb_slam:/home/arms/paper3_ws/install/ui:/home/arms/paper3_ws/install/lp_slam:/home/arms/X4M300_ws/install/python_parameters:/home/arms/X4M300_ws/install/novelda_x4m300:/home/arms/p440_ws/install/uwb_slam:/home/arms/p440_ws/install/uwb_raw_vis:/home/arms/p440_ws/install/ui:/home/arms/p440_ws/install/ekf_slam:/home/arms/ros2_driver_mmwave/install/save_db:/opt/ros/iron /usr/bin/cmake --install /home/arms/paper3_ws/build/uwb_ranger
+[0.578s] -- Install configuration: ""
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/lib/uwb_ranger/ranger
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/lib/uwb_ranger/ranger2
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger//launch
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger//launch/__pycache__
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger//launch/__pycache__/rangenet.cpython-310.pyc
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger//launch/rangenet.launch.py
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger//config
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger//config/params.yaml
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/ament_index/resource_index/package_run_dependencies/uwb_ranger
+[0.578s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/ament_index/resource_index/parent_prefix_path/uwb_ranger
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/environment/ament_prefix_path.sh
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/environment/ament_prefix_path.dsv
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/environment/path.sh
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/environment/path.dsv
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/local_setup.bash
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/local_setup.sh
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/local_setup.zsh
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/local_setup.dsv
+[0.579s] -- Installing: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/package.dsv
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/ament_index/resource_index/packages/uwb_ranger
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/cmake/uwb_rangerConfig.cmake
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/cmake/uwb_rangerConfig-version.cmake
+[0.579s] -- Up-to-date: /home/arms/paper3_ws/install/uwb_ranger/share/uwb_ranger/package.xml
+[0.580s] Invoked command in '/home/arms/paper3_ws/build/uwb_ranger' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/arms/paper3_ws/install/uwb_slam:/home/arms/paper3_ws/install/ui:/home/arms/paper3_ws/install/lp_slam:/home/arms/X4M300_ws/install/python_parameters:/home/arms/X4M300_ws/install/novelda_x4m300:/home/arms/p440_ws/install/uwb_slam:/home/arms/p440_ws/install/uwb_raw_vis:/home/arms/p440_ws/install/ui:/home/arms/p440_ws/install/ekf_slam:/home/arms/ros2_driver_mmwave/install/save_db:/opt/ros/iron /usr/bin/cmake --install /home/arms/paper3_ws/build/uwb_ranger

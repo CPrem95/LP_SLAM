@@ -411,7 +411,7 @@ def chkIntersec3(mu, r, psi):
 
     return isInter
 
-# STILL TO BE USED || to mitigate the effect of the slope of the line encountered in Matlab
+# STILL TO BE USED || to mitigate the effect of the slope of the line in RANSAC encountered in Matlab
 def modify_lineParams(isLine, inlierIdx, line_params, thresh_th, points, sampleSize, maxDistance, minNNI):
     m = line_params[0]
     m_th = np.degrees(np.arctan(m))  # converts the slope to an angle
@@ -448,7 +448,7 @@ def fitransac(pts, odoms, rob_obs_pose, minNNI, fig):
     inlierPts = np.array([0])
 
     sampleSize = 3  # number of points to sample per trial
-    maxDistance = 30  # max allowable distance for inliers
+    maxDistance = 20  # max allowable distance for inliers
 
     isLine, inlierIdx, modelInliers = myRANSAC(pts, sampleSize, maxDistance, minNNI)
 
@@ -491,7 +491,7 @@ def fitransac(pts, odoms, rob_obs_pose, minNNI, fig):
             r0 = r - odompt[0] * np.cos(th) - odompt[1] * np.sin(th)
             th0 = th - odompt[2]
 
-        lineParams_robot = [r0.item(), th0.item(), len_line, m, c, x[0], x[1], y[0], y[1]]
+        lineParams_robot = [r0.item(), th0.item(), len_line, m, c, x[0], x[1], y[0], y[1]] # line parameters as seen from the robot [r0, th0, len, m, c, x0, x1, y0, y1]
 
         # Plotting
         if fig:
@@ -529,7 +529,7 @@ def fitransac(pts, odoms, rob_obs_pose, minNNI, fig):
 
 def fitransac2(points, odoms, rob_obs_pose, minNNI, fig):
     sampleSize = 3  # number of points to sample per trial
-    maxDistance = 30  # max allowable distance for inliers
+    maxDistance = 20  # max allowable distance for inliers
 
     lineParams_odom = None
     lineParams_robot = None
@@ -561,6 +561,7 @@ def fitransac2(points, odoms, rob_obs_pose, minNNI, fig):
         x = [np.min(inlierPts[:, 0]), np.max(inlierPts[:, 0])]
         y = [np.min(inlierPts[:, 1]), np.max(inlierPts[:, 1])]
         
+
         # Line params from the origin
         r = np.sqrt(x0 ** 2 + y0 ** 2)
         th = np.arctan2(y0, x0)
@@ -580,7 +581,7 @@ def fitransac2(points, odoms, rob_obs_pose, minNNI, fig):
             r0 = r - odompt[0] * np.cos(th) - odompt[1] * np.sin(th)
             th0 = th - odompt[2]
 
-        lineParams_robot = [r0.item(), th0.item(), len_, m, c, x[0], x[1], y[0], y[1]]
+        lineParams_robot = [r0.item(), th0.item(), len_, m, c, x[0], x[1], y[0], y[1]] # line parameters as seen from the robot [r0, th0, len, m, c, x0, x1, y0, y1]
 
         # Plotting
         if fig:
@@ -611,7 +612,7 @@ def fitransac2(points, odoms, rob_obs_pose, minNNI, fig):
 
 # Extract lines from the observations
 def lineExtract(pts_i, odom_i, rob_obs_pose, thresh, N_LMs, minNNI, fig):
-    nni_thresh, N_inl_thresh, L_len_thresh, r_thresh, th_thresh = thresh
+    N_inl_thresh, L_len_thresh, r_thresh, th_thresh = thresh
 
     L_LMs = np.zeros((10, 8))  # Initialize array to store line parameters
 
@@ -637,7 +638,7 @@ def lineExtract(pts_i, odom_i, rob_obs_pose, thresh, N_LMs, minNNI, fig):
                         np.any(np.abs(lineParams_robot[1] - L_LMs[:N_LMs[0], 1]) < th_thresh)
 
                 if not check or N_LMs[0] == 0:
-                    L_LMs[N_LMs[0]] = np.concatenate((lineParams_robot[0:2], lineParams_robot[3:5], lineParams_robot[5:7], lineParams_robot[7:9]))  
+                    L_LMs[N_LMs[0]] = np.concatenate((lineParams_robot[0:2], lineParams_robot[3:5], lineParams_robot[5:7], lineParams_robot[7:9]))  # [r0, th0, m, c, x0, x1, y0, y1]
                     N_LMs[0] += 1  
     return N_LMs, L_LMs
 
@@ -646,48 +647,50 @@ def lineExtract(pts_i, odom_i, rob_obs_pose, thresh, N_LMs, minNNI, fig):
 # Point Extraction
 #_______________________________________________________________________________________________________________________
 
+# Filter points that are close to each other
 def filtnearPts(P_LMs, N_LMs, pts):
     thresh = 300
-    D = np.linalg.norm(pts[:, np.newaxis, :] - pts[np.newaxis, :, :], axis=-1)
+    D = np.linalg.norm(pts[:, np.newaxis, :] - pts[np.newaxis, :, :], axis=-1) # distance of the point to all other points
     n = N_LMs[1]
     p_LMs = np.empty((0, 2))
     n_LMs = 0
 
-    for i in range(n):
-        d = D[i]
-        if np.all(d[d != 0] > thresh):
-            p_LMs = np.vstack((p_LMs, P_LMs[i]))
-            n_LMs += 1
+    for i in range(n): # for each point
+        d = D[i] # distance of the point to all other points   
+        if np.all(d[d != 0] > thresh): # check if the distance of the point to all other points is greater than the threshold
+            p_LMs = np.vstack((p_LMs, P_LMs[i])) # add the point to the list of points
+            n_LMs += 1 # increment the number of points
 
     N_LMs[1] = n_LMs
     return p_LMs, N_LMs
 
+# Extract points from the observations
 def pointExtract(points, L_LMs, N_LMs, d_thresh, params, odom_i, rob_obs_pose, fig):
     P_LMs = np.zeros((2))
     xymeans = np.zeros((2))
     if points.shape[0] > 0:
-        cluster1 = DBSCAN(eps=params[1], min_samples=params[0], algorithm='auto')
-        clus_idx = cluster1.fit_predict(points)
+        cluster1 = DBSCAN(eps=params[1], min_samples=params[0], algorithm='auto') # clustering algorithm
+        clus_idx = cluster1.fit_predict(points) # cluster the points
 
-        N = np.max(clus_idx) + 1
+        N = np.max(clus_idx) + 1 # number of clusters
 
         xymeans = np.zeros((N, 2))
         P_LMs = np.zeros((N, 2))
         # lengths = np.zeros((N, N_LMs[0]))
 
-        for i in range(N):
-            ind = np.where(clus_idx == i)[0]
-            pt = np.mean(points[ind], axis=0)
+        for i in range(N): # for each cluster
+            ind = np.where(clus_idx == i)[0] # get the indices of the points in the cluster
+            pt = np.mean(points[ind], axis=0) # get the mean of the points in the cluster
 
-            check = True
-            for j in range(N_LMs[0]):
-                D = pt2line(L_LMs[j, 2:4], pt)
+            check = True # flag to check if the point is close to a line
+            for j in range(N_LMs[0]): # for each line
+                D = pt2line(L_LMs[j, 2:4], pt) # distance of the point to the line || 2:4 to get [m, c] from [r0, th0, m, c, x0, x1, y0, y1]
                 # lengths[N_LMs[1], j] = D
-                if D < d_thresh:
+                if D < d_thresh: # check if the distance is less than the threshold
                     check = False
                     break
 
-            if check:
+            if check: # if the point is not close to any line
                 xymeans[N_LMs[1]] = pt
                 N_LMs[1] += 1
 
@@ -715,7 +718,6 @@ def pointExtract(points, L_LMs, N_LMs, d_thresh, params, odom_i, rob_obs_pose, f
 
     return N_LMs, P_LMs, xymeans
 
-
 #_______________________________________________________________________________________________________________________
 #
 # FINAL Line and Point Extraction
@@ -737,25 +739,30 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
     count_L = 0
     count_P = 0
 
+    '''
+    The line landmarks are directly added to the observation list.
+    '''
     # LHS
     for i in range(N_LMs_lhs_1[0]):
         obs_Lins[count_L, :] = L_LMs_lhs_1[i, :]
         count_L += 1
-
     # RHS
     for i in range(N_LMs_rhs_1[0]):
         obs_Lins[count_L, :] = L_LMs_rhs_1[i, :]
         count_L += 1
 
+    '''
+    The point landmarks are added to the observation list if they are not close to any line landmarks.
+    '''
     # LHS
     mem_1 = False
     mem_2 = False
-    for i in range(N_LMs_lhs_1[1]):
-        x0 = odompt[0] + P_LMs_lhs_1[i, 0] * np.cos(P_LMs_lhs_1[i, 1] + odompt[2])
+    for i in range(N_LMs_lhs_1[1]): # for each point landmark observation in REGION 1
+        x0 = odompt[0] + P_LMs_lhs_1[i, 0] * np.cos(P_LMs_lhs_1[i, 1] + odompt[2]) # with respect to the robot ODOM
         y0 = odompt[1] + P_LMs_lhs_1[i, 0] * np.sin(P_LMs_lhs_1[i, 1] + odompt[2])
         x1, y1 = P_LMs_lhs_1[i, :2]
         prev_dist = 1e10
-        for j in range(N_LMs_lhs_12[0]):
+        for j in range(N_LMs_lhs_12[0]): # for each line landmark observation in REGION 12
             m, c = L_LMs_lhs_12[j, 2:4]
             pt2lin_dist = pt2line([m, c], [x0, y0])
             if pt2lin_dist < pt2line_thresh:
@@ -764,12 +771,20 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
                     near_line = L_LMs_lhs_12[j, :]
                     prev_dist = pt2lin_dist
 
-        for k in range(N_line):
+        for k in range(N_line): # for all initialized lines
+            # print('k: ', k)
             m, c = rth2mc(mu_bar, N_pts_allocated, k)
-            if pt2line([m, c], [x0, y0]) < pt2line_thresh:
+            # print('dist: ', pt2line([m, c], [_x0, _y0]))
+            # print('[m, c]: ', [m, c])
+            # print('[_x0, _y0]: ', [_x0, _y0])
+            # check if the point is close to the line
+            if pt2line([m, c], [x0, y0]) < pt2line_thresh: # with respect to the robot mu_bar (Estimate) because the initialized estimated lines
                 mid = [np.mean(visLine_x[k]), np.mean(visLine_y[k])]
+                # print('mid: ', mid)
                 mid2pt = np.linalg.norm([mid[0] - x0, mid[1] - y0])
+                # print('mid2pt: ', mid2pt)
                 ln_len = np.linalg.norm([visLine_x[k, 0] - visLine_x[k, 1], visLine_y[k, 0] - visLine_y[k, 1]])
+                # print('ln_len: ', ln_len)
                 if mid2pt < ln_len / 2 + 300:
                     mem_2 = True
 
@@ -786,20 +801,12 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
     # RHS
     mem_3 = False
     mem_4 = False
-    # print('N_LMs_rhs_1: ', N_LMs_rhs_1)
-    
-    for i in range(N_LMs_rhs_1[1]):
-        # print('i: ', i)
-        # print('odompt: ', odompt)
-        # print('P_LMs_rhs_1: ', P_LMs_rhs_1)
-        # print('P_LMs_rhs_1[i, 0]: ', P_LMs_rhs_1[i, 0])
-        # print('P_LMs_rhs_1[i, 1]: ', P_LMs_rhs_1[i, 1])
-
-        x0 = odompt[0] + P_LMs_rhs_1[i, 0] * np.cos(P_LMs_rhs_1[i, 1] + odompt[2])
+    for i in range(N_LMs_rhs_1[1]): # for each point landmark observation in REGION 1
+        x0 = odompt[0] + P_LMs_rhs_1[i, 0] * np.cos(P_LMs_rhs_1[i, 1] + odompt[2]) # with respect to the robot ODOM
         y0 = odompt[1] + P_LMs_rhs_1[i, 0] * np.sin(P_LMs_rhs_1[i, 1] + odompt[2])
         x1, y1 = P_LMs_rhs_1[i, :2]
         prev_dist = 1e10
-        for j in range(N_LMs_rhs_12[0]):
+        for j in range(N_LMs_rhs_12[0]): # for each line landmark observation in REGION 12
             m, c = L_LMs_rhs_12[j, 2:4]
             pt2lin_dist = pt2line([m, c], [x0, y0])
             if pt2lin_dist < pt2line_thresh:
@@ -807,8 +814,9 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
                 if pt2lin_dist < prev_dist:
                     near_line = L_LMs_rhs_12[j, :]
 
-        for k in range(N_line):
+        for k in range(N_line): # for all initialized lines
             m, c = rth2mc(mu_bar, N_pts_allocated, k)
+            # check if the point is close to the line
             if pt2line([m, c], [x0, y0]) < pt2line_thresh:
                 mid = [np.mean(visLine_x[k]), np.mean(visLine_y[k])]
                 mid2pt = np.linalg.norm([mid[0] - x0, mid[1] - y0])
@@ -833,8 +841,8 @@ def createObs(N_LMs_lhs_1, L_LMs_lhs_1, P_LMs_lhs_1, N_LMs_lhs_12, L_LMs_lhs_12,
 
 # Convert r and th line parameters to m and c
 def rth2mc(mu, nPtLMs, n):
-    lin_i = nPtLMs * 2 + 2 + 2 * n
-
+    lin_i = nPtLMs * 2 + 3 + 2 * n # index of the line parameters
+    
     line_r = mu[lin_i]
     line_th = mu[lin_i + 1]
 
@@ -998,7 +1006,7 @@ def EKF_unknown_line_obs_correction_1(k, mu_bar, sig_bar, exp_pt_landm, exp_line
     psi_i = mu_bar[4 + 2 * exp_pt_landm + 2 * k]
 
     z0 = np.array([r_i - mu_bar[0] * np.cos(psi_i) - mu_bar[1] * np.sin(psi_i), psi_i - mu_bar[2]])
-
+    print('z0: ', z0)
     F_xk = np.block([
         [np.eye(3), np.zeros((3, 2 * exp_pt_landm)), np.zeros((3, 2 * k)), np.zeros((3, 2)), np.zeros((3, 2 * exp_line_landm - 2 * k - 2))],
         [np.zeros((2, 3)), np.zeros((2, 2 * exp_pt_landm)), np.zeros((2, 2 * k)), np.eye(2), np.zeros((2, 2 * exp_line_landm - 2 * k - 2))]])
@@ -1015,6 +1023,7 @@ def EKF_unknown_line_obs_correction_1(k, mu_bar, sig_bar, exp_pt_landm, exp_line
         z0[1] = z0[1] - 2 * np.pi
 
     del_Z = z - z0
+    print('del_Z: ', del_Z)
 
     pie = np.dot(del_Z.T, np.linalg.inv(psi)) @ del_Z
 
@@ -1026,6 +1035,7 @@ def EKF_unknown_line_obs_correction_2(k, mu_bar, sig_bar, exp_pt_landm, exp_line
     psi_i = mu_bar[4 + 2 * exp_pt_landm + 2 * k]
 
     z0 = np.array([-r_i + mu_bar[0] * np.cos(psi_i) + mu_bar[1] * np.sin(psi_i), psi_i - mu_bar[2] + np.pi]).reshape(-1, 1)
+    print('z0: ', z0)
 
     F_xk = np.block([[np.eye(3), np.zeros((3, 2 * exp_pt_landm)), np.zeros((3, 2 * k)), np.zeros((3, 2)), np.zeros((3, 2 * exp_line_landm - 2 * k - 2))],
                       [np.zeros((2, 3)), np.zeros((2, 2 * exp_pt_landm)), np.zeros((2, 2 * k)), np.eye(2), np.zeros((2, 2 * exp_line_landm - 2 * k - 2))]])
@@ -1042,12 +1052,13 @@ def EKF_unknown_line_obs_correction_2(k, mu_bar, sig_bar, exp_pt_landm, exp_line
         z0[1] -= 2 * np.pi
 
     del_Z = z - z0
+    print('del_Z: ', del_Z)
 
     pie = (del_Z.T @ np.linalg.inv(psi) @ del_Z).item()
     return pie, psi, H, z0
 
 # EKF correction for both point and line landmarks
-def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_lhs_R12, obs_rhs_R12, obs_pts, obs_lin, Q_pts, Q_lin, iter, hist_i, countarr, exp_pt_landm, exp_line_landm, N_pt, N_line, visLine_x, visLine_y, alp_pt, alp_line):
+def EKF_unknown_correction_LP(mu_bar, sig_bar, odompt, obs_lhs_R12, obs_rhs_R12, obs_pts, obs_lin, Q_pts, Q_lin, iter, hist_i, countarr, exp_pt_landm, exp_line_landm, N_pt, N_line, visLine_x, visLine_y, alp_pt, alp_line):
     obs_pts = np.squeeze(obs_pts)
     obs_lin = np.squeeze(obs_lin)
     len_obs_pts, _ = obs_pts.shape
@@ -1074,8 +1085,8 @@ def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_lhs_R12, obs_rhs_R12, obs_pts
             # check whether the new POINT observation is isolated
             if ind_j_pt == N_pt: # if a new landmark is observed
                 all_pts = np.concatenate((obs_lhs_R12, obs_rhs_R12)) # all the raw observation points
-                cent = mu_bar[:2] + rel_meas # current observation
-                iso = chkIsolated(all_pts, cent, 150, 250)
+                cent = np.array([odompt[0] + r * np.cos(phi + odompt[2]), odompt[1] + r * np.sin(phi + odompt[2])]).reshape(-1, 1) # center of the new point
+                iso = chkIsolated(all_pts, cent, 200, 300)
                 if iso: # Update performed only if its a ISOLATED point
                     _, psi_j, H_j, z_j = EKF_unknown_pts_obs_correction(ind_j_pt, mu_bar, sig_bar, exp_pt_landm, exp_line_landm, Q_pts, z)
 
@@ -1109,7 +1120,8 @@ def EKF_unknown_correction_LP(mu_bar, sig_bar, obs_lhs_R12, obs_rhs_R12, obs_pts
             ro = obs_lin[j, 0]
             alpha = obs_lin[j, 1]
             z = np.array([ro, alpha]).reshape(-1, 1)
-
+            print('\n --------------------------------------------------------------------------------')
+            print('z: ', z)
             isInter = chkIntersec(mu_bar, ro, alpha)
 
             if isInter:
@@ -1382,3 +1394,16 @@ def chkIsolated(points, center, thresh1, thresh2):
         iso = True # the point is isolated
 
     return iso
+
+def rotate_points(points, theta_rad):
+    # theta is in radians
+    # points are numpy array of shape (n, 2)
+    
+    # Define rotation matrix
+    rotation_matrix = np.array([[np.cos(theta_rad), -np.sin(theta_rad)],
+                                 [np.sin(theta_rad), np.cos(theta_rad)]])
+    
+    # Apply rotation
+    rotated_points = np.dot(points, rotation_matrix)
+    
+    return rotated_points
