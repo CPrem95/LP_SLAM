@@ -1,0 +1,50 @@
+lp_slam_publisher:
+  ros__parameters:
+    winsize: 150 # window size for a region (INTEGER)
+    stepsize: 3 # step size for the SLAM update window (INTEGER)
+
+    ini_pt_landm_var: 1000000 # initial point landmark variance (INTEGER)
+    ini_ln_landm_var: 10000 # initial line landmark variance (INTEGER)
+    exp_pt_landm: 50 # expected number of point landmarks (INTEGER)
+    exp_line_landm: 50 # expected number of line landmarks (INTEGER)
+
+    # (1,2) Regions
+    N_inl_thresh_12: 110          # number of inliers (INTEGER)
+    L_len_thresh_12: 1100         # length of the line (INTEGER)
+    r_thresh_12: 300              # registers a line if it is not within 300 mm of the previous line (INTEGER)
+    th_thresh_12: 1               # registers a line if it is not within 1 degree of the previous line (INTEGER)
+    D_ransac_12: 15
+
+    # (1) Regions   
+    N_inl_thresh_1: 70            # number of inliers (INTEGER)
+    L_len_thresh_1: 750           # length of the line (INTEGER)
+    r_thresh_1: 100               # registers a line if it is not within 100 mm of the previous line (INTEGER)
+    th_thresh_1: 1                # registers a line if it is not within 1 degree of the previous line (INTEGER)
+    D_ransac_1: 15                # distance for RANSAC (INTEGER)
+
+    alp_pt: 0.5   # M-distance threshold for point landmarks (FLOAT)
+    alp_ln: 1.0   # M-distance threshold for line landmarks (FLOAT)
+    r: 1.5 # winsize ratio (FLOAT)
+
+    # measurement noise points
+    # Q_pts: [[10000, 0],
+    # [0, 0.25]
+    var_range: 10000.0
+    var_bearing: 0.25
+
+    # measurement noise lines
+    # Q_lines: [[2500, 0],
+    # [0, 0.1]]
+    var_ro: 2500.0
+    var_alpha: 0.1
+
+    # process noise
+    # R: 
+    # - [100, 0, 0]
+    # - [0, 100, 0]
+    # - [0, 0, 0.0004]
+    var_x: 100.0
+    var_y: 100.0
+    var_th: 0.0004
+
+    

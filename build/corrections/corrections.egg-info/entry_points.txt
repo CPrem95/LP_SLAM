@@ -1,0 +1,3 @@
+[console_scripts]
+odom_correc = corrections.odom_correc:main
+

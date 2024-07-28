@@ -1,0 +1,6 @@
+[console_scripts]
+icp_node = save_data.icp
+map2base = save_data.map2base:main
+plot_results = save_data.result_plot
+save_node = save_data.sv_data:main
+

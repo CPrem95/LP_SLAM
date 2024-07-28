@@ -1,5 +1,6 @@
 from setuptools import find_packages, setup
-
+import os 
+from glob import glob
 package_name = 'lp_slam'
 
 setup(
@@ -10,6 +11,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,10 +23,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'lp_node = lp_slam.lp_node:main',
-            'lpsim_node = lp_slam.lp_node_sim:main',
-            # 'kdf_node = ekf_slam.kdf:main',
-            # 'gs_ekf_node = ekf_slam.ekf_gs_node:main'
+            'plot_node = lp_slam.lp_node_rawObs:main',
+            'lp_node_mat = lp_slam.lp_node_mat:main',
         ],
     },
 )

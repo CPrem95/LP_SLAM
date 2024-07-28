@@ -35,6 +35,10 @@ COLCON_CURRENT_PREFIX="/opt/ros/iron"
 _colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
 
 # setting COLCON_CURRENT_PREFIX avoids relying on the build time prefix of the sourced script
+COLCON_CURRENT_PREFIX="/home/arms/nooploop2_ws/install"
+_colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
+
+# setting COLCON_CURRENT_PREFIX avoids relying on the build time prefix of the sourced script
 COLCON_CURRENT_PREFIX="/home/arms/ros2_driver_mmwave/install"
 _colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
 
@@ -48,6 +52,14 @@ _colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
 
 # setting COLCON_CURRENT_PREFIX avoids relying on the build time prefix of the sourced script
 COLCON_CURRENT_PREFIX="/home/arms/turtlebot3_ws/install"
+_colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
+
+# setting COLCON_CURRENT_PREFIX avoids relying on the build time prefix of the sourced script
+COLCON_CURRENT_PREFIX="/home/arms/nooploop_ws/install"
+_colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
+
+# setting COLCON_CURRENT_PREFIX avoids relying on the build time prefix of the sourced script
+COLCON_CURRENT_PREFIX="/home/arms/paper4_ws/install"
 _colcon_prefix_chain_sh_source_script "$COLCON_CURRENT_PREFIX/local_setup.sh"
 
 

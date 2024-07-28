@@ -1,5 +1,0 @@
-  File "/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages/lp_slam/lp_node.py", line 430
-    set_limits(ax2, np.concatenate((obs_lhs_R12, obs_rhs_R12), odom[i:i+stepsize, :])
-              ^
-SyntaxError: '(' was never closed
-

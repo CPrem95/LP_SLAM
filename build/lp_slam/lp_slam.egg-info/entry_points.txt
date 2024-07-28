@@ -1,4 +1,4 @@
 [console_scripts]
-lp_node = lp_slam.lp_node:main
-lpsim_node = lp_slam.lp_node_sim:main
+lp_node_mat = lp_slam.lp_node_mat:main
+plot_node = lp_slam.lp_node_rawObs:main
 

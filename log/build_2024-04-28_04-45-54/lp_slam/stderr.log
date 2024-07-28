@@ -1,5 +1,0 @@
-  File "/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages/lp_slam/lp_node.py", line 439
-    print("mu:", mu[3+2*exp_pt_landm:4+2*exp_pt_landm + 2*N_line].reshape(-1, 2)
-         ^
-SyntaxError: '(' was never closed
-
