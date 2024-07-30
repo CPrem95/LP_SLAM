@@ -12,4 +12,6 @@ Clone the repo and build it.
 3. Copy the `dataset_mph6_mpp5.mat` to the `dataset` directory in the ROS2 workspace.
 
 4. Edit the `params.yaml` files in the following directory:
-``` ~/paper3_ws/install/lp_slam/share/lp_slam/config ```
+```
+~/paper3_ws/install/lp_slam/share/lp_slam/config
+```
