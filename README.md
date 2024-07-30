@@ -29,3 +29,40 @@ mph6 and mpp5 in `dataset_mph6_mpp5.mat` refers to the maximum peak height of 6e
 We have use the same `mph` and  `mpp` during our experiments.
  
 If you want to change those parameters and test, you should follow the fillowing steps.
+
+1. Go to one of the datasets from the IEEE Dataport.
+
+2. Go to following files and change the `self.mph` and `self.mpp` as necessary.
+```
+~/<workspace_name>/src/uwb_trilat/uwb_trilat/trilaterte_left.py
+```
+```
+~/<workspace_name>/src/uwb_trilat/uwb_trilat/trilaterte_right.py
+```
+3. Do to the following launch file and change the topic names of `r1_topic` to `r4_topic` to match the suitable topics from the `radar_config` file inside the IEEE Dataport dataset.
+```
+~/<workspace_name>/src/uwb_trilat/launch/trilat_launch.py
+```
+4. Rebuild the ROS2 workspace.
+
+3. Open 4 terminals (T).
+
+5. Launch the Trilaterator in T1.
+```
+ros2 launch uwb_trilat trilat_launch.py 
+```
+
+6. Run the raw data visualizer in T2.
+```
+ros2 run lp_slam plot_node 
+```
+
+7. Run the `*.mat` dataset generator to collect and save data in T3.
+```
+ros2 run save_data save_node 
+```
+8. Play the rosbag file in T4.
+```
+ros2 bag play <rosbag file>
+```
+9. Once the rosbag file stops playing, stop the save_node in T3 to save the collected data.
