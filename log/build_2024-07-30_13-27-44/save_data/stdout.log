@@ -1,0 +1,18 @@
+running egg_info
+writing ../../build/save_data/save_data.egg-info/PKG-INFO
+writing dependency_links to ../../build/save_data/save_data.egg-info/dependency_links.txt
+writing entry points to ../../build/save_data/save_data.egg-info/entry_points.txt
+writing requirements to ../../build/save_data/save_data.egg-info/requires.txt
+writing top-level names to ../../build/save_data/save_data.egg-info/top_level.txt
+reading manifest file '../../build/save_data/save_data.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+running install_egg_info
+running install_scripts
+Installing icp_node script to /home/arms/paper3_ws/install/save_data/lib/save_data
+Installing map2base script to /home/arms/paper3_ws/install/save_data/lib/save_data
+Installing plot_results script to /home/arms/paper3_ws/install/save_data/lib/save_data
+Installing save_node script to /home/arms/paper3_ws/install/save_data/lib/save_data

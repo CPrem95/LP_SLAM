@@ -1,0 +1,4 @@
+[console_scripts]
+leftTrilaterator = uwb_trilat.trilaterte_left:main
+rightTrilaterator = uwb_trilat.trilaterte_right:main
+

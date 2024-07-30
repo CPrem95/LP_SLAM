@@ -175,17 +175,10 @@ def main(args=None):
     # s3 : is the number of parameters for each observation e.g. xy
     
     odom = np.concatenate((np.zeros([1, 3]), odom), axis=0) # padding zeros to the beginning
-    ''' for lab.mat
-    obsLHS = np.concatenate((np.zeros([1, 5, 2]), obsLHS), axis=0) # padding zeros to the beginning
-    obsRHS = np.concatenate((np.zeros([1, 5, 2]), obsRHS), axis=0) # padding zeros to the beginning
-    '''
-    # for lift.mat
     obsLHS = np.concatenate((np.zeros([1, s2, 2]), obsLHS), axis=0) # padding zeros to the beginning
     obsRHS = np.concatenate((np.zeros([1, s2, 2]), obsRHS), axis=0) # padding zeros to the beginning
-
     obsLHS = np.concatenate((obsLHS, np.zeros([stepsize + 2*winsize, s2, 2])), axis=0) # padding zeros to the end
     obsRHS = np.concatenate((obsRHS, np.zeros([stepsize + 2*winsize, s2, 2])), axis=0) # padding zeros to the end
-
     odom = np.concatenate((odom, np.tile(odom[-1], (stepsize + 2*winsize, 1))), axis=0) # padding zeros to the end
 
     obs_count = np.zeros([1, exp_pt_landm + exp_line_landm])

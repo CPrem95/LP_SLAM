@@ -1,0 +1,298 @@
+[0.064s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.064s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=20, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x719e61f82350>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x719e61f81e40>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x719e61f81e40>>, mixin_verb=('build',))
+[0.176s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.176s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.176s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.176s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.176s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.176s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.176s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/arms/paper3_ws'
+[0.176s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.176s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.176s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.176s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.176s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.176s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.177s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.177s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.177s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'ignore_ament_install'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extensions ['colcon_pkg']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'colcon_pkg'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extensions ['colcon_meta']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'colcon_meta'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extensions ['ros']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'ros'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extensions ['cmake', 'python']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'cmake'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'python'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extensions ['python_setup_py']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(dataset) by extension 'python_setup_py'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extensions ['ignore', 'ignore_ament_install']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extension 'ignore'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extension 'ignore_ament_install'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extensions ['colcon_pkg']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extension 'colcon_pkg'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extensions ['colcon_meta']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extension 'colcon_meta'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extensions ['ros']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(src/corrections) by extension 'ros'
+[0.192s] DEBUG:colcon.colcon_core.package_identification:Package 'src/corrections' with type 'ros.ament_python' and name 'corrections'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extensions ['ignore', 'ignore_ament_install']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extension 'ignore'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extension 'ignore_ament_install'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extensions ['colcon_pkg']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extension 'colcon_pkg'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extensions ['colcon_meta']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extension 'colcon_meta'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extensions ['ros']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/ekf_slam) by extension 'ros'
+[0.192s] DEBUG:colcon.colcon_core.package_identification:Package 'src/ekf_slam' with type 'ros.ament_python' and name 'lp_slam'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extensions ['ignore', 'ignore_ament_install']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extension 'ignore'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extension 'ignore_ament_install'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extensions ['colcon_pkg']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extension 'colcon_pkg'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extensions ['colcon_meta']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extension 'colcon_meta'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extensions ['ros']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(src/save_data) by extension 'ros'
+[0.193s] DEBUG:colcon.colcon_core.package_identification:Package 'src/save_data' with type 'ros.ament_python' and name 'save_data'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extensions ['ignore', 'ignore_ament_install']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extension 'ignore'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extension 'ignore_ament_install'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extensions ['colcon_pkg']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extension 'colcon_pkg'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extensions ['colcon_meta']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extension 'colcon_meta'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extensions ['ros']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(src/uwb_trilat) by extension 'ros'
+[0.193s] DEBUG:colcon.colcon_core.package_identification:Package 'src/uwb_trilat' with type 'ros.ament_python' and name 'uwb_trilat'
+[0.193s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.193s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.193s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.193s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.193s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.206s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.206s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.207s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 2 installed packages in /home/arms/paper4_ws/install
+[0.207s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/arms/nooploop_ws/install
+[0.208s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/arms/turtlebot3_ws/install
+[0.208s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 4 installed packages in /home/arms/paper3_ws/install
+[0.208s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/arms/X4M300_ws/install
+[0.209s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 7 installed packages in /home/arms/p440_ws/install
+[0.209s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 4 installed packages in /home/arms/ros2_driver_mmwave/install
+[0.209s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 3 installed packages in /home/arms/nooploop2_ws/install
+[0.210s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 352 installed packages in /opt/ros/iron
+[0.211s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.235s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'cmake_args' from command line to 'None'
+[0.235s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'cmake_target' from command line to 'None'
+[0.235s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'cmake_clean_cache' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'cmake_clean_first' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'cmake_force_configure' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'ament_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'catkin_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'corrections' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.236s] DEBUG:colcon.colcon_core.verb:Building package 'corrections' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/arms/paper3_ws/build/corrections', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/arms/paper3_ws/install/corrections', 'merge_install': False, 'path': '/home/arms/paper3_ws/src/corrections', 'symlink_install': False, 'test_result_base': None}
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'cmake_target' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'cmake_clean_cache' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'cmake_clean_first' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'cmake_force_configure' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'ament_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'catkin_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'lp_slam' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.236s] DEBUG:colcon.colcon_core.verb:Building package 'lp_slam' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/arms/paper3_ws/build/lp_slam', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/arms/paper3_ws/install/lp_slam', 'merge_install': False, 'path': '/home/arms/paper3_ws/src/ekf_slam', 'symlink_install': False, 'test_result_base': None}
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'cmake_target' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'cmake_clean_cache' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'cmake_clean_first' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'cmake_force_configure' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'ament_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'catkin_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'save_data' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.236s] DEBUG:colcon.colcon_core.verb:Building package 'save_data' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/arms/paper3_ws/build/save_data', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/arms/paper3_ws/install/save_data', 'merge_install': False, 'path': '/home/arms/paper3_ws/src/save_data', 'symlink_install': False, 'test_result_base': None}
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'cmake_target' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'cmake_clean_cache' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'cmake_clean_first' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'cmake_force_configure' from command line to 'False'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'ament_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'catkin_cmake_args' from command line to 'None'
+[0.236s] Level 5:colcon.colcon_core.verb:set package 'uwb_trilat' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.236s] DEBUG:colcon.colcon_core.verb:Building package 'uwb_trilat' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/arms/paper3_ws/build/uwb_trilat', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/arms/paper3_ws/install/uwb_trilat', 'merge_install': False, 'path': '/home/arms/paper3_ws/src/uwb_trilat', 'symlink_install': False, 'test_result_base': None}
+[0.237s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.237s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.237s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/arms/paper3_ws/src/corrections' with build type 'ament_python'
+[0.237s] Level 1:colcon.colcon_core.shell:create_environment_hook('corrections', 'ament_prefix_path')
+[0.239s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.239s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/corrections/share/corrections/hook/ament_prefix_path.ps1'
+[0.239s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/corrections/share/corrections/hook/ament_prefix_path.dsv'
+[0.240s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/corrections/share/corrections/hook/ament_prefix_path.sh'
+[0.241s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.241s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.246s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/arms/paper3_ws/src/ekf_slam' with build type 'ament_python'
+[0.246s] Level 1:colcon.colcon_core.shell:create_environment_hook('lp_slam', 'ament_prefix_path')
+[0.246s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/hook/ament_prefix_path.ps1'
+[0.247s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/hook/ament_prefix_path.dsv'
+[0.247s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/hook/ament_prefix_path.sh'
+[0.247s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.247s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.250s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/arms/paper3_ws/src/save_data' with build type 'ament_python'
+[0.250s] Level 1:colcon.colcon_core.shell:create_environment_hook('save_data', 'ament_prefix_path')
+[0.251s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/save_data/share/save_data/hook/ament_prefix_path.ps1'
+[0.251s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/save_data/share/save_data/hook/ament_prefix_path.dsv'
+[0.251s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/save_data/share/save_data/hook/ament_prefix_path.sh'
+[0.251s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.251s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.256s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/arms/paper3_ws/src/uwb_trilat' with build type 'ament_python'
+[0.256s] Level 1:colcon.colcon_core.shell:create_environment_hook('uwb_trilat', 'ament_prefix_path')
+[0.257s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/hook/ament_prefix_path.ps1'
+[0.257s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/hook/ament_prefix_path.dsv'
+[0.257s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/hook/ament_prefix_path.sh'
+[0.257s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.257s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.479s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/arms/paper3_ws/src/corrections'
+[0.479s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.479s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.692s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/arms/paper3_ws/src/ekf_slam'
+[0.692s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.692s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.901s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/arms/paper3_ws/src/save_data'
+[0.901s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.901s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.108s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/arms/paper3_ws/src/uwb_trilat'
+[1.109s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.109s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.441s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/arms/paper3_ws/src/corrections': PYTHONPATH=/home/arms/paper3_ws/build/corrections/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/corrections/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/corrections build --build-base /home/arms/paper3_ws/build/corrections/build install --record /home/arms/paper3_ws/build/corrections/install.log --single-version-externally-managed install_data
+[1.451s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/arms/paper3_ws/src/uwb_trilat': PYTHONPATH=/home/arms/paper3_ws/build/uwb_trilat/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/uwb_trilat/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/uwb_trilat build --build-base /home/arms/paper3_ws/build/uwb_trilat/build install --record /home/arms/paper3_ws/build/uwb_trilat/install.log --single-version-externally-managed install_data
+[1.452s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/arms/paper3_ws/src/ekf_slam': PYTHONPATH=/home/arms/paper3_ws/build/lp_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/lp_slam build --build-base /home/arms/paper3_ws/build/lp_slam/build install --record /home/arms/paper3_ws/build/lp_slam/install.log --single-version-externally-managed install_data
+[1.491s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/arms/paper3_ws/src/save_data': PYTHONPATH=/home/arms/paper3_ws/build/save_data/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/save_data/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/save_data build --build-base /home/arms/paper3_ws/build/save_data/build install --record /home/arms/paper3_ws/build/save_data/install.log --single-version-externally-managed install_data
+[1.661s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/arms/paper3_ws/src/corrections' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/corrections/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/corrections/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/corrections build --build-base /home/arms/paper3_ws/build/corrections/build install --record /home/arms/paper3_ws/build/corrections/install.log --single-version-externally-managed install_data
+[1.663s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections' for CMake module files
+[1.664s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections' for CMake config files
+[1.664s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections/lib'
+[1.665s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections/bin'
+[1.665s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections/lib/pkgconfig/corrections.pc'
+[1.665s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections/lib/python3.10/site-packages'
+[1.665s] Level 1:colcon.colcon_core.shell:create_environment_hook('corrections', 'pythonpath')
+[1.665s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/corrections/share/corrections/hook/pythonpath.ps1'
+[1.665s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/corrections/share/corrections/hook/pythonpath.dsv'
+[1.666s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/corrections/share/corrections/hook/pythonpath.sh'
+[1.666s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/corrections/bin'
+[1.666s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(corrections)
+[1.667s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/corrections/share/corrections/package.ps1'
+[1.668s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/arms/paper3_ws/install/corrections/share/corrections/package.dsv'
+[1.668s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/corrections/share/corrections/package.sh'
+[1.668s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/corrections/share/corrections/package.bash'
+[1.669s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/corrections/share/corrections/package.zsh'
+[1.669s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/arms/paper3_ws/install/corrections/share/colcon-core/packages/corrections)
+[1.670s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam' for CMake module files
+[1.670s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam' for CMake config files
+[1.671s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/arms/paper3_ws/src/ekf_slam' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/lp_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/lp_slam build --build-base /home/arms/paper3_ws/build/lp_slam/build install --record /home/arms/paper3_ws/build/lp_slam/install.log --single-version-externally-managed install_data
+[1.671s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam/lib'
+[1.671s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam/bin'
+[1.671s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam/lib/pkgconfig/lp_slam.pc'
+[1.671s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam/lib/python3.10/site-packages'
+[1.671s] Level 1:colcon.colcon_core.shell:create_environment_hook('lp_slam', 'pythonpath')
+[1.671s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/hook/pythonpath.ps1'
+[1.672s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/hook/pythonpath.dsv'
+[1.672s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/hook/pythonpath.sh'
+[1.672s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/lp_slam/bin'
+[1.672s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(lp_slam)
+[1.672s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/package.ps1'
+[1.672s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/package.dsv'
+[1.673s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/package.sh'
+[1.673s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/package.bash'
+[1.673s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/lp_slam/share/lp_slam/package.zsh'
+[1.673s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/arms/paper3_ws/install/lp_slam/share/colcon-core/packages/lp_slam)
+[1.678s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat' for CMake module files
+[1.678s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat' for CMake config files
+[1.679s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/arms/paper3_ws/src/uwb_trilat' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/uwb_trilat/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/uwb_trilat/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/uwb_trilat build --build-base /home/arms/paper3_ws/build/uwb_trilat/build install --record /home/arms/paper3_ws/build/uwb_trilat/install.log --single-version-externally-managed install_data
+[1.679s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat/lib'
+[1.679s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat/bin'
+[1.679s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat/lib/pkgconfig/uwb_trilat.pc'
+[1.679s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat/lib/python3.10/site-packages'
+[1.679s] Level 1:colcon.colcon_core.shell:create_environment_hook('uwb_trilat', 'pythonpath')
+[1.679s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/hook/pythonpath.ps1'
+[1.680s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/hook/pythonpath.dsv'
+[1.680s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/hook/pythonpath.sh'
+[1.680s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/uwb_trilat/bin'
+[1.680s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(uwb_trilat)
+[1.681s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/package.ps1'
+[1.681s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/package.dsv'
+[1.681s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/package.sh'
+[1.681s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/package.bash'
+[1.681s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/uwb_trilat/share/uwb_trilat/package.zsh'
+[1.681s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/arms/paper3_ws/install/uwb_trilat/share/colcon-core/packages/uwb_trilat)
+[1.714s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data' for CMake module files
+[1.715s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/arms/paper3_ws/src/save_data' returned '0': PYTHONPATH=/home/arms/paper3_ws/build/save_data/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/arms/paper3_ws/install/save_data/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/save_data build --build-base /home/arms/paper3_ws/build/save_data/build install --record /home/arms/paper3_ws/build/save_data/install.log --single-version-externally-managed install_data
+[1.715s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data' for CMake config files
+[1.715s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data/lib'
+[1.715s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data/bin'
+[1.715s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data/lib/pkgconfig/save_data.pc'
+[1.716s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data/lib/python3.10/site-packages'
+[1.716s] Level 1:colcon.colcon_core.shell:create_environment_hook('save_data', 'pythonpath')
+[1.716s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/save_data/share/save_data/hook/pythonpath.ps1'
+[1.716s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/arms/paper3_ws/install/save_data/share/save_data/hook/pythonpath.dsv'
+[1.716s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/arms/paper3_ws/install/save_data/share/save_data/hook/pythonpath.sh'
+[1.716s] Level 1:colcon.colcon_core.environment:checking '/home/arms/paper3_ws/install/save_data/bin'
+[1.716s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(save_data)
+[1.717s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/save_data/share/save_data/package.ps1'
+[1.717s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/arms/paper3_ws/install/save_data/share/save_data/package.dsv'
+[1.717s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/save_data/share/save_data/package.sh'
+[1.717s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/save_data/share/save_data/package.bash'
+[1.717s] INFO:colcon.colcon_core.shell:Creating package script '/home/arms/paper3_ws/install/save_data/share/save_data/package.zsh'
+[1.717s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/arms/paper3_ws/install/save_data/share/colcon-core/packages/save_data)
+[1.717s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[1.717s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[1.718s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[1.718s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[1.722s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[1.722s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[1.722s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[1.730s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[1.731s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/arms/paper3_ws/install/local_setup.ps1'
+[1.731s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/arms/paper3_ws/install/_local_setup_util_ps1.py'
+[1.732s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/arms/paper3_ws/install/setup.ps1'
+[1.733s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/arms/paper3_ws/install/local_setup.sh'
+[1.733s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/arms/paper3_ws/install/_local_setup_util_sh.py'
+[1.733s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/arms/paper3_ws/install/setup.sh'
+[1.734s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/arms/paper3_ws/install/local_setup.bash'
+[1.734s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/arms/paper3_ws/install/setup.bash'
+[1.735s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/arms/paper3_ws/install/local_setup.zsh'
+[1.735s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/arms/paper3_ws/install/setup.zsh'
