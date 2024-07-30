@@ -65,4 +65,5 @@ ros2 run save_data save_node
 ```
 ros2 bag play <rosbag file>
 ```
-9. Once the rosbag file stops playing, stop the save_node in T3 to save the collected data.
+9. Once the rosbag file stops playing, stop `ctrl + C` the save_node in T3 to save the collected data. A `dataset.mat` file will be then created in the current working directory. You may rename that file similar to the already generated `dataset_mph6_mpp5.mat`.
+
